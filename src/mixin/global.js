@@ -3,6 +3,10 @@ export default {
     return {
       changes: {
         count: []
+      },
+      comPermissions: {
+        'goals': [3, 4],
+        'tarif': [3, 4],
       }
     }
   },
@@ -20,6 +24,22 @@ export default {
       } else {
         return false;
       }
+    },
+
+    userType() {
+      if (this.$store.state.user.extended) {
+        let utype = this.$store.state.user.extended.type;
+        if (!utype) {
+          utype = 1;
+        }
+        return parseInt(utype);
+      }
+
+      return 1;
+    },
+
+    $sudo() {
+      return this.$store.state.user.sudo;
     },
 
     userSettings() {
@@ -266,7 +286,8 @@ export default {
       return false;
     },
 
-    declension(num, expressions) {
+    // ( 2, ['МЕСЯЦ', 'МЕСЯЦА', 'МЕСЯЦЕВ']  )
+    Declension(num, expressions) {
       var result;
       var count = num % 100;
       if (count >= 5 && count <= 20) {
@@ -282,6 +303,29 @@ export default {
         }
       }
       return result;
+    },
+
+    // формат для цен
+    Number_format(number, decimals, dec_point, thousands_sep) {
+      number = (number + "").replace(/[^0-9+\-Ee.]/g, "");
+      var n = !isFinite(+number) ? 0 : +number,
+        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+        sep = typeof thousands_sep === "undefined" ? " " : thousands_sep,
+        dec = typeof dec_point === "undefined" ? "." : dec_point,
+        s = "",
+        toFixedFix = function(n, prec) {
+          var k = Math.pow(10, prec);
+          return "" + (Math.round(n * k) / k).toFixed(prec);
+        };
+      s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
+      if (s[0].length > 3) {
+        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+      }
+      if ((s[1] || "").length < prec) {
+        s[1] = s[1] || "";
+        s[1] += new Array(prec - s[1].length + 1).join("0");
+      }
+      return s.join(dec);
     },
 
     // Фильтр выбранных прав, нужно передвть permissions_tree
@@ -302,13 +346,19 @@ export default {
     // Список ЖК из прав пользователя
     NamesZkinPermissions(item, id) {
       if (this.$store.state.user.internalKey == id) {
-        return "Главный аккаунт";
+        return "Ваш аккаунт";
       }
       let names = [];
       this.lodash.forEach(item, p => {
         names.push(p.name);
       });
       return names.join(", ");
+    },
+
+    // устанавливает ссылку которая сработает после закрытия мастера
+    SetRouteParam(route) {
+      console.log(route);
+      window.routeParam = route;
     }
   }
 }

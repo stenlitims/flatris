@@ -200,6 +200,34 @@ a {
 .btn {
   border-radius: 5px;
   border-width: 2px;
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.more-dots {
+  display: inline-block;
+  width: 3px;
+  cursor: pointer;
+
+  span {
+    display: block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: #98a6ad;
+    margin-bottom: 2px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.btn-success:not(:disabled):not(.disabled).active,
+.btn-success:not(:disabled):not(.disabled):active,
+.show > .btn-success.dropdown-toggle {
+  background-color: #199c82;
+  border-color: #199c82;
 }
 
 .btn-outline-primary {
@@ -731,10 +759,10 @@ select[disabled].form-control {
     margin-bottom: -1px;
     transition: all 0.3s ease;
     position: relative;
-    &.active{
+    &.active {
       background: #5fbeaa;
       border-color: #5fbeaa;
-      opacity: .7;
+      opacity: 0.7;
     }
   }
 }
@@ -852,10 +880,10 @@ select[disabled].form-control {
   background: #fff;
 }
 
-input[readonly]{
+input[readonly] {
   background: #fff !important;
   cursor: no-drop;
-  &:focus{
+  &:focus {
     border-color: #cbd6e2 !important;
   }
 }

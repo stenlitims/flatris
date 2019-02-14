@@ -32,7 +32,11 @@
             :to="{ name: 'object', params: { id: 1, oid:item.id }}"
             class="btn btn-outline-primary waves-effect"
           >Редактировать</router-link>
-          <button @click="deleteObject(item.id)" class="btn btn-outline-primary2 waves-effect">Удалить</button>
+          <button
+            v-if="objtype == 'my'"
+            @click="deleteObject(item.id)"
+            class="btn btn-outline-primary2 waves-effect"
+          >Удалить</button>
         </div>
       </div>
     </div>
@@ -60,12 +64,15 @@ export default {
   mounted() {},
   computed: {
     objects() {
-      let data = this.$store.state.myObjects;
+      let objects = null;
       if (this.objtype != "my") {
-        let data = this.$store.state.myObjectsCMS;
+        objects = this.$store.state.myObjectsCMS;
+      } else {
+        objects = this.$store.state.myObjects;
       }
+      //  console.log(objects);
       if (this.search) {
-        data = this.lodash.filter(data, o => {
+        objects = this.lodash.filter(objects, o => {
           return this.lodash.includes(
             o.name.toLowerCase(),
             this.search.toLowerCase()
@@ -73,7 +80,7 @@ export default {
         });
       }
 
-      return data;
+      return objects;
     }
   },
   methods: {
@@ -82,6 +89,8 @@ export default {
         this.$store.commit("loadMyObjects", "cms");
       }
       this.objtype = type;
+      //     console.log(type);
+      window.routeParam = { ...this.$route };
     },
     send(data) {
       // console.log(this.data);

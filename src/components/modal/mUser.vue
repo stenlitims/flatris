@@ -11,7 +11,7 @@
     <div class="form-group">
       <label>Тип пользователя</label>
       <select class="form-control" v-model="data.extended.type">
-        <option v-for="(item, i) in $store.state.typeUsers" :key="i" :value="i">{{item}}</option>
+        <option v-for="(item, i) in typeUsers" :key="i" :value="i">{{item}}</option>
       </select>
     </div>
 
@@ -105,6 +105,14 @@ export default {
     },
     myObjects() {
       return this.$store.state.myObjects;
+    },
+    typeUsers(){
+      let types = {...this.$store.state.typeUsers};
+      if(this.userType == 2){
+        delete types['1'];
+      }
+
+      return types;
     }
   },
   methods: {

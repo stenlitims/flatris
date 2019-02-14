@@ -9,14 +9,18 @@
         </div>
       </div>
 
-      <button class="btn btn-lg btn-or waves-effect" @click="addUser">Добавить пользователя</button>
+      <button
+        v-if="userType < 3"
+        class="btn btn-lg btn-or waves-effect"
+        @click="addUser"
+      >Добавить пользователя</button>
     </div>
 
     <div class="table-responsive">
       <table class="table table-actions-bar users-table">
         <thead>
           <tr>
-            <th></th>
+            <th v-if="userType < 3"></th>
             <th>ИМЯ</th>
             <th>ТИП ПОЛЬЗОВАТЕЛЯ</th>
             <th>ПРАВА ДОСТУПА К ОБЪЕКТАМ</th>
@@ -24,14 +28,20 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in users" :key="i" :class="{'active': item.checked}">
-            <td>
+            <td v-if="userType < 3">
               <label class="cus-check" v-if="$store.state.user.internalKey != item.internalKey">
                 <input type="checkbox" @change="selectUs(item)" v-model="item.checked">
                 <span class="ch"></span>
               </label>
             </td>
-            <td v-if="item.fullname">{{item.fullname}}</td>
-            <td v-else>{{item.email}}</td>
+            <td
+              :class="{'mainAc': $store.state.user.internalKey == item.internalKey}"
+              @click="linkAc(item)"
+            >
+              <div v-if="item.fullname">{{item.fullname}}</div>
+              <div v-else>{{item.email}}</div>
+            </td>
+
             <td>{{getTypeUser(item)}}</td>
             <td :class="'upr'+item.internalKey">{{NamesZkinPermissions(item.per, item.internalKey)}}</td>
           </tr>
@@ -126,9 +136,13 @@ export default {
     }
   },
   methods: {
+    linkAc(item) {
+      if (this.$store.state.user.internalKey != item.internalKey) return;
+      this.$router.push({ name: "settings", params: { id: "user" } });
+    },
     getTypeUser(item) {
       if (this.$store.state.user.internalKey == item.internalKey) {
-        return "Администратор";
+        return this.$store.state.typeUsers[this.userType];
       }
       if (!item.extended) {
         return "";
@@ -181,6 +195,18 @@ export default {
     transition: all 0.3s ease;
     &.active {
       background: rgb(227, 247, 243);
+    }
+  }
+}
+
+.mainAc {
+  > div {
+    display: inline-block;
+    text-decoration: underline;
+    color: #40c0a9;
+    cursor: pointer;
+    &:hover {
+      text-decoration: none;
     }
   }
 }

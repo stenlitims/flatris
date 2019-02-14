@@ -333,7 +333,7 @@ export default {
           this.$store.commit("loadPermissions", "web");
         }
       }
-     // console.log(this.$route.name);
+      // console.log(this.$route.name);
       if (this.$route.name == "new_mirkv") {
         this.$store.commit("loadPermissions", "mirkvartir");
       }

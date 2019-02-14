@@ -27,7 +27,7 @@
         <div class="c-btns" v-else>
           <router-link
             :to="{ name: 'webchess', params: { id: 1, oid: item.id }}"
-            class="btn btn-outline-primary waves-effect"
+            class="btn btn-line waves-effect"
           >Создать</router-link>
         </div>
       </div>

@@ -165,7 +165,7 @@ export default {
     //if (!this.$store.state.myObjects) {
     this.$store.commit("loadMyObjects", "test");
     //}
-    window.routeParam = { name: this.$route.name };
+    window.routeParam = { ...this.$route };
     if (this.$route.params.id == "other") {
       this.chObj("other");
     }
@@ -233,7 +233,9 @@ export default {
       if (!this.$store.state.myObjectsCMS) {
         this.$store.commit("loadMyObjects", "cms");
       }
+      location.hash = "#/objects/" + type;
       this.objtype = type;
+      window.routeParam = { ...this.$route };
     },
     openGtab(item) {
       this.gtab.spreadsheet_id = item.spreadsheet_id;
@@ -279,14 +281,13 @@ export default {
 </script>
 
 <style lang="scss">
-
-.heading{
-  .r{
+.heading {
+  .r {
     display: flex;
   }
-  .search{
+  .search {
     margin-right: 30px;
-    input{
+    input {
       height: 100%;
     }
   }

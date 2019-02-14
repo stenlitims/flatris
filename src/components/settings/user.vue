@@ -13,7 +13,7 @@
             </svg>
           </a>
         </div>
-        <div class="type">Администратор</div>
+        <div class="type">{{$store.state.typeUsers[userType]}}</div>
       </div>
     </div>
 
@@ -54,7 +54,7 @@
       <div class="col-lg-6">
         <div class="form-group">
           <label>Компания</label>
-          <input type="text" class="form-control" @keyup="setChanges('fax')" v-model="out.fax">
+          <input type="text" class="form-control" @keyup="setChanges('fax')" :readonly=" userType != 1 " v-model="out.fax">
         </div>
       </div>
       <div class="col-lg-6">
@@ -148,6 +148,7 @@ export default {
         }
       });
     });
+
   },
   computed: {
     out() {
@@ -156,7 +157,15 @@ export default {
         this.original = Object.assign({}, this.$store.state.user);
       }
       return this.form;
-    }
+    },
+    // typeUserName(){
+
+    //   return
+    // this.$store.state.user.typeUsers
+
+
+      
+    // }
   },
   methods: {
     passeye() {

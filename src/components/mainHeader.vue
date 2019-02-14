@@ -119,10 +119,10 @@
               title="Настройки"
             >Заказы и оплаты</router-link>
 
-            <a class="dropdown-item" href="#">База знаний</a>
+            <a class="dropdown-item" target="_blank" href="https://flatris.com.ua/wiki/poshagovaya-nastrojka/sozdanie-obekta">База знаний</a>
             <a class="dropdown-item" @click.prevent="mesPop" href="#">Служба поддержки</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item link" href="#">Выход с аккаунта</a>
+            <a class="dropdown-item link" href="https://test.flatris.com.ua/login?service=logout">Выход с аккаунта</a>
           </div>
         </div>
       </div>

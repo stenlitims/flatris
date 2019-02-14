@@ -41,7 +41,8 @@ export default {
         internalKey: 0,
         extended: {
           email: null,
-          type: 1
+          type: 1,
+          mainId: this.$store.state.user.internalKey
         },
         dataPer: {}
       }
@@ -78,12 +79,17 @@ export default {
       return true;
     },
     addUser() {
+      let fillData = this.FilterPremSelected(window.newUserPr);
+      // console.log(fillData);
+      // return;
       if (!this.validForm()) return;
+
       $.post(
         this.$store.state.apiurl,
         {
           action: "addUser",
-          data: this.user
+          data: this.user,
+          prem: fillData
         },
         data => {
           if (data.type == "success") {
@@ -139,7 +145,7 @@ export default {
           this.$store.state.permissionsCMS[user]
         );
 
-      //  console.log(pr[user]);
+        //  console.log(pr[user]);
 
         $.ajax({
           url: this.$root.mainurl + "/api?action=updateUserPermissions&ut=cms",

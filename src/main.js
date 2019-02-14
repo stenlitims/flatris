@@ -6,6 +6,7 @@ import App from './App'
 //import cusCheckbox from "@/components/global/checkbox"
 import cusSwitch from "@/components/global/switch"
 import noObjedcts from "@/components/chanks/noObjedcts"
+import permissionDenied from "@/components/chanks/permissionDenied"
 import mixGlobal from "@/mixin/global"
 
 import router from './router'
@@ -24,6 +25,7 @@ Vue.use(VueBus)
 Vue.config.productionTip = false
 Vue.component('cusSwitch', cusSwitch)
 Vue.component('noObjedcts', noObjedcts)
+Vue.component('permissionDenied', permissionDenied)
 Vue.component('slide-up-down', SlideUpDown)
 
 Vue.mixin(mixGlobal);

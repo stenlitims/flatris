@@ -38,7 +38,7 @@
               <div v-else>
                 <router-link
                   :to="{ name: 'webchess', params: { id: 1, oid: item.id }}"
-                  class="btn btn-default waves-effect"
+                  class="btn btn-line waves-effect"
                 >Создать</router-link>
                 <div class="info">
                   <a href="#">Посмотреть инструкцию</a>
@@ -92,5 +92,11 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.main-list{
+
+}
+.btn-line{
+  min-width: 140px;
+}
 </style>

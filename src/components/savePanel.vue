@@ -40,7 +40,13 @@ export default {
       if (this.title) {
         return this.title;
       } else {
-        return "Вы внесли " + this.count + " изменение.";
+        return (
+          "Вы внесли " +
+          this.count +
+          " " +
+          this.Declension(this.count, ["изменение", "изменения", "изменений"]) +
+          "."
+        );
       }
     }
   },

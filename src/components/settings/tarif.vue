@@ -64,17 +64,18 @@
                 <td v-else @click="setTarif('unlim', $event)">{{item.unlim}}</td>
               </tr>
               <tr class="price-tr">
-                <td>Стоимость
+                <td>
+                  Стоимость
                   <span class="inf" title="Стоимость указана за месяц при оплате на год"></span>
                 </td>
                 <td @click="setTarif('start', $event)">
-                  <b>от {{start}} {{currency}}</b>
+                  <b>от {{prices.start}} {{currency}}</b>
                 </td>
                 <td @click="setTarif('standart', $event)">
-                  <b>от {{standart}} {{currency}}</b>
+                  <b>от {{prices.standart}} {{currency}}</b>
                 </td>
                 <td @click="setTarif('unlim', $event)">
-                  <b>от {{unlim}} {{currency}}</b>
+                  <b>от {{prices.unlim}} {{currency}}</b>
                 </td>
               </tr>
             </tbody>
@@ -117,24 +118,24 @@
             </div>
             <div class="item" :class="{'active': step == 2}">
               <div class="t" @click="step = 2">2. Период</div>
-              <div class="v">
-                <b>{{periodList[period].num}} {{declension(periodList[period].num, ['МЕСЯЦ', 'МЕСЯЦА', 'МЕСЯЦЕВ'] )}}</b>
+              <div class="v" v-if="showTotalInfo">
+                <b>{{periodList[period].num}} {{Declension(periodList[period].num, ['МЕСЯЦ', 'МЕСЯЦА', 'МЕСЯЦЕВ'] )}}</b>
               </div>
             </div>
             <div class="item">
               <div class="t">3. Стоимость</div>
-              <div class="v">
+              <div class="v" v-if="showTotalInfo">
                 <div v-if="total.price" class="all-price">
-                  <b>{{number_format(total.price)}} {{currency}}</b>
+                  <b>{{Number_format(total.price)}} {{currency}}</b>
                 </div>
-                <b class="total-price">{{number_format(total.total)}} {{currency}}</b>
+                <b class="total-price">{{Number_format(total.total)}} {{currency}}</b>
               </div>
             </div>
 
             <div class="btns text-center">
               <button
                 v-if="step == 1"
-                @click="step = 2"
+                @click="step = 2; showTotalInfo = true"
                 class="btn btn-line btn-md waves-effect"
               >ВЫБРАТЬ ПЕРИОД</button>
               <button v-if="step == 2" class="btn btn-line btn-md waves-effect">ОПЛАТИТЬ</button>
@@ -157,24 +158,26 @@ export default {
       currency: "USD",
       step: 1,
       tarif: "start",
-      period: "m1",
+      period: 1,
+      showTotalInfo: false,
+      tarifNames: ["start", "standart", "unlim"],
       periodList: {
-        m1: {
+        1: {
           idx: 0,
           num: 1,
           sale: 0
         },
-        m3: {
+        3: {
           idx: 1,
           num: 3,
           sale: 5
         },
-        m6: {
+        6: {
           idx: 2,
           num: 6,
           sale: 10
         },
-        m12: {
+        12: {
           idx: 3,
           num: 12,
           sale: 15
@@ -285,7 +288,11 @@ export default {
     };
   },
 
-  created() {},
+  created() {
+    if (!this.$store.state.tariffs) {
+      this.$store.commit("getTariffs");
+    }
+  },
 
   mounted() {
     $(".inf").tooltip({
@@ -308,14 +315,20 @@ export default {
     }
   },
   computed: {
-    start() {
-      return this.number_format(this.price[this.currency].start);
+    tariffs() {
+      return this.$store.state.tariffs;
     },
-    standart() {
-      return this.number_format(this.price[this.currency].standart);
-    },
-    unlim() {
-      return this.number_format(this.price[this.currency].unlim);
+    prices() {
+      if (!this.tariffs) return "";
+      let pr = {};
+      for (let tname of this.tarifNames) {
+        pr[tname] = this.Number_format(
+          this.tariffs[tname + this.period][
+            "price_" + this.currency.toLowerCase()
+          ]
+        );
+      }
+      return pr;
     },
     width() {
       let width = (100 / 3) * this.periodList[this.period].idx;
@@ -324,15 +337,11 @@ export default {
       };
     },
     total() {
-      let price = this.price[this.currency][this.tarif];
-      let period = this.periodList[this.period].num;
-      let allprice = price * period;
-      let total = allprice;
-      if (this.periodList[this.period].sale) {
-        total = allprice - (allprice / 100) * this.periodList[this.period].sale;
-      } else {
-        allprice = 0;
-      }
+      if (!this.tariffs) return "";
+      let total = this.tariffs[this.tarif + this.period][
+        "price_" + this.currency.toLowerCase()
+      ];
+      let allprice = 0;
       return {
         price: allprice,
         total: total
@@ -353,27 +362,6 @@ export default {
       let el = $("td.active")[0];
       this.ramka.width = el.clientWidth + "px";
       this.ramka.left = el.offsetLeft + "px";
-    },
-    number_format(number, decimals, dec_point, thousands_sep) {
-      number = (number + "").replace(/[^0-9+\-Ee.]/g, "");
-      var n = !isFinite(+number) ? 0 : +number,
-        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-        sep = typeof thousands_sep === "undefined" ? " " : thousands_sep,
-        dec = typeof dec_point === "undefined" ? "." : dec_point,
-        s = "",
-        toFixedFix = function(n, prec) {
-          var k = Math.pow(10, prec);
-          return "" + (Math.round(n * k) / k).toFixed(prec);
-        };
-      s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
-      if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-      }
-      if ((s[1] || "").length < prec) {
-        s[1] = s[1] || "";
-        s[1] += new Array(prec - s[1].length + 1).join("0");
-      }
-      return s.join(dec);
     },
     send(data) {
       // console.log(this.data);
@@ -511,7 +499,7 @@ export default {
         height: 0;
         border-style: solid;
         border-width: 15px 0 15px 13px;
-        border-color: transparent transparent transparent #f8f8f8;
+        border-color: transparent transparent transparent #fff;
       }
     }
 
@@ -529,7 +517,7 @@ export default {
   }
 }
 
-.settings-tarif {
+body .settings-tarif {
   max-width: 1300px;
   .row {
     margin-right: -10px;
@@ -546,12 +534,12 @@ export default {
   font-size: 13px;
   line-height: 1.4;
   background: #00bfae;
-  transform: translate(9px,0);
+  transform: translate(9px, 0);
 }
 
 .tooltip {
   .arrow {
-    transform: translate(9px,0);
+    transform: translate(9px, 0);
     &:before {
       border-top-color: #00bfae !important;
     }

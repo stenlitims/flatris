@@ -44,7 +44,7 @@
                   </ul>
                 </slide-up-down>
               </li>
-              <li @click="nav.inst = false">
+              <li @click="nav.inst = false" v-if="$sudo">
                 <router-link :to="{ name: 'settings', params: { id: 'reports' }}">Отчеты</router-link>
               </li>
               <li @click="nav.inst = false">
@@ -53,7 +53,7 @@
               <li @click="nav.inst = false">
                 <router-link :to="{ name: 'settings', params: { id: 'goals' }}">Цели</router-link>
               </li>
-              <li @click="nav.inst = false">
+              <li @click="nav.inst = false" v-if="userType < 3">
                 <router-link :to="{ name: 'settings', params: { id: 'tarif' }}">Тарифы</router-link>
               </li>
               <li @click="nav.inst = false">
@@ -96,7 +96,7 @@ import portals from "@/components/settings/portals";
 import agents from "@/components/settings/agents";
 import reports from "@/components/settings/reports";
 import users from "@/components/settings/users";
-import goals from "@/components/settings/goals";
+import goals from "@/components/settings/goals"; // Цели
 import savePanel from "@/components/savePanel";
 import modalRight from "@/components/settings/modalRight";
 
@@ -105,7 +105,8 @@ export default {
   data() {
     return {
       nav: {
-        inst: false
+        inst: false,
+        instItems: ["webchess", "crm", "portals", "agents"]
       },
       userIds: []
     };
@@ -130,6 +131,9 @@ export default {
 
   created() {
     window.routeName = this.$route.name;
+    if (this.nav.instItems.includes(this.$route.params.id)) {
+      this.nav.inst = true;
+    }
     if (!this.$store.state.userSettings) {
       this.$store.commit("loadUserSettings", "test");
     }
@@ -141,6 +145,12 @@ export default {
   computed: {
     component() {
       if (this.$route.params.id) {
+        let id = this.$route.params.id;
+        if (this.comPermissions[id]) {
+          if (this.comPermissions[id].includes(this.userType)) {
+            return "permissionDenied";
+          }
+        }
         return this.$route.params.id;
       }
     }

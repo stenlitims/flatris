@@ -30,17 +30,17 @@ export default new Vuex.Store({
     changes: {
       count: []
     },
-
     rmodal: {
       type: null
     },
     typeUsers: {
-      "1": "Администратор",
-      "2": "Руководитель",
-      "3": "Менеджер",
-      "4": "Партнер",
-    }
-
+      1: "Администратор",
+      2: "Руководитель",
+      3: "Менеджер",
+      4: "Партнер",
+    },
+    tariffs: null,
+    orders: null,
   },
   mutations: {
     loadRmodal(state, payload) {
@@ -68,6 +68,34 @@ export default new Vuex.Store({
         data => {
           if (data) {
             state.api = data;
+          }
+        },
+        "json"
+      );
+    },
+    // загрузка тарифов
+    getTariffs(state) {
+      $.post(
+        state.apiurl, {
+          action: "getTariffs"
+        },
+        data => {
+          if (data) {
+            state.tariffs = data;
+          }
+        },
+        "json"
+      );
+    },
+    // загрузка оплат
+    getOrders(state) {
+      $.post(
+        state.apiurl, {
+          action: "getOrders"
+        },
+        data => {
+          if (data) {
+            state.orders = data;
           }
         },
         "json"

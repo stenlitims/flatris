@@ -65,6 +65,8 @@ export default {
       this.data = this.$store.state.permissionsCMS[this.userId];
     } else {
       this.data = { ...this.$store.state.permissions.clear };
+
+      window.newUserPr = this.data;
     }
   },
 

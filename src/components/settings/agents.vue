@@ -1,7 +1,7 @@
 <template>
   <div class="settings-right">
     <div class="settings-btns">
-      <h3>Подключение агентств недвижимости</h3>
+      <h3>Подключение агентств</h3>
 
       <div class="form-group">
         <div class="search">

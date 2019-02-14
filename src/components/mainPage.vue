@@ -128,8 +128,8 @@
             </div>
           </div>
 
-
-          <div class="col-md-6 col-lg-4">
+         
+          <div class="col-md-6 col-lg-4" v-if="countObjects">
             <div class="item">
               <div class="img">
                 <img :src="$root.mainurl +'/assets/panel/img/main/7.png'" alt>
@@ -137,12 +137,15 @@
               <div class="title">7. Добавить коллег</div>
               <div class="btns">
                 <router-link
-                  :to="{ name: 'new_agent', params: { id: 1 }}"
+                  :to="{ name: 'settings', params: { id: 'users' }}"
                   class="btn btn-outline-success btn-md waves-effect"
                 >Добавить</router-link>
               </div>
             </div>
           </div>
+         
+
+
         </div>
       </div>
     </div>

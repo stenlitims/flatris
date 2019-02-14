@@ -58,9 +58,18 @@ export default {
   }
   .t {
     text-transform: uppercase;
-    padding: 8px;
+    padding: 5px;
     font-weight: bold;
-    font-size: 12px;
+    font-size: 10px;
+    width: 28px;
+    text-align: center;
+  }
+  .on{
+  //  padding-left: 5px;
+  //  padding-right: 4px;
+  }
+  .off{
+  //  padding-left: 6px;
   }
   &.active {
     background: #5fbeaa;

@@ -51,7 +51,7 @@ export default {
               if (this.$route.name == "new_object") {
                 nameRoute = "myObjects";
               }
-              this.$router.push({ name: nameRoute });
+              this.$router.push({ name: nameRoute, params: { id: "my" } });
             }, 300);
           }
         },
