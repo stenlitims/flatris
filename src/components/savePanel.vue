@@ -14,6 +14,9 @@
 
         <div class="title">{{mtitle}}</div>
       </div>
+      <div class="r">
+        <a href="#" @click.prevent="closePanel">Закрыть</a>
+      </div>
     </div>
   </div>
 </template>
@@ -51,6 +54,10 @@ export default {
     }
   },
   methods: {
+    closePanel() {
+      this.$emit("userIds", []);
+      this.$bus.emit("clearUsers");
+    },
     removeUser(ids) {
       if (!ids) return;
       (async () => {

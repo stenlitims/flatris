@@ -19,7 +19,7 @@
       <label>Права доступа к объектам</label>
 
       <div v-if="countObjects">
-        <pModalPr :item="item" :userId="data.internalKey" v-for="(item, i) in myObjects" :key="i"></pModalPr>
+        <pModalPr :item="item" :userId="data.internalKey" :typeUser="data.extended.type" v-for="(item, i) in myObjects" :key="i"></pModalPr>
       </div>
 
       <div v-else class="text-center">У вас нет созданных объектов</div>
@@ -79,8 +79,7 @@ export default {
     if (!this.$store.state.permissions.web.length) {
       this.$store.commit("loadPermissions", "web");
     }
-  
-    
+
     this.setGmal();
   },
 
@@ -106,10 +105,10 @@ export default {
     myObjects() {
       return this.$store.state.myObjects;
     },
-    typeUsers(){
-      let types = {...this.$store.state.typeUsers};
-      if(this.userType == 2){
-        delete types['1'];
+    typeUsers() {
+      let types = { ...this.$store.state.typeUsers };
+      if (this.userType == 2) {
+        delete types["1"];
       }
 
       return types;

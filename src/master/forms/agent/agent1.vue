@@ -3,7 +3,7 @@
     <h3 class="text-center">Карточка агента</h3>
     <div class="form">
       <div class="row">
-        <div class="col-lg-6">
+        <!-- <div class="col-lg-6">
           <div class="form-group">
             <label>Тип Агента</label>
             <select v-model="form.type" class="form-control">
@@ -11,20 +11,20 @@
               > {{item}}</option>
             </select>
           </div>
-        </div>
-        <div class="col-lg-6">
+        </div> -->
+        <div class="col-lg-12">
           <div class="form-group">
             <label>Название компании / ФИО агента</label>
             <input type="text" class="form-control" placeholder="" v-model="form.agent_user_name">
           </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12">
           <div class="form-group">
             <label>Email</label>
             <input type="email" class="form-control" v-model="form.agent_user_email">
           </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-12">
           <div class="form-group">
             <label>Сайт</label>
             <input type="text" class="form-control" v-model="form.site">
@@ -115,5 +115,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.form{
+  max-width: 500px !important;
+}
 </style>

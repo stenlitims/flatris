@@ -52,7 +52,7 @@
 <script>
 export default {
   name: "pModalPr",
-  props: ["clear", "item", "userId"],
+  props: ["item", "userId", "typeUser"],
   data() {
     return {
       data: null,
@@ -65,8 +65,16 @@ export default {
       this.data = this.$store.state.permissionsCMS[this.userId];
     } else {
       this.data = { ...this.$store.state.permissions.clear };
-
       window.newUserPr = this.data;
+      this.setAll();
+    }
+  },
+
+  watch: {
+    typeUser() {
+      if (!this.userId) {
+        this.setAll();
+      }
     }
   },
 
@@ -87,6 +95,17 @@ export default {
     }
   },
   methods: {
+    setAll() {
+      let selected = false;
+      if (this.typeUser == 1) {
+        selected = true;
+      }
+
+      this.lodash.forEach(this.data, (item, key) => {
+        item.state.selected = selected;
+      });
+      this.activeBlock = selected;
+    },
     any() {
       let any = this.lodash.find(this.data, item => {
         return (

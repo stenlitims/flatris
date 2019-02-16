@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col-md-3 col-lg-2">
+        <div class="col-md-3 col-lg-2 wrap-left-nav">
           <div class="left-nav">
             <ul>
               <li @click="nav.inst = false">
@@ -62,7 +62,7 @@
             </ul>
           </div>
         </div>
-        <div class="col-md-9 col-lg-10">
+        <div class="col-md-9 col-lg-10 settings-content">
           <!-- <div style="display:none">{{$route.name}} {{$route.params.id}}</div> -->
           <!-- <transition name="center" mode="out-in"></transition> -->
           <component :is="component" @userIds="userIds = $event"></component>
@@ -76,10 +76,12 @@
       @userIds="userIds = []"
       prop="users"
       :ids="userIds"
-      :title="'Вы выбрали '+userIds.length+' пользователя.'"
+      :title="'Вы выбрали '+userIds.length+' '+Declension(userIds.length, ['пользователя', 'пользователя', 'пользователей'] )+ '.'"
     ></savePanel>
     <transition name="sright">
-      <modalRight v-if="$store.state.rmodal.type" :userIds="userIds"></modalRight>
+      <modalRight
+       @userIds="userIds = $event"
+       v-if="$store.state.rmodal.type" :userIds="userIds"></modalRight>
     </transition>
   </div>
 </template>
@@ -140,6 +142,14 @@ export default {
   },
 
   beforeDestroy() {},
+
+  watch:{
+    // userIds(){
+    //   if(!this.userIds.length){
+
+    //   }
+    // }
+  },
 
   mounted() {},
   computed: {

@@ -181,7 +181,7 @@ export default {
   position: absolute;
   top: 0;
   right: 0;
-  width: 400px;
+  width: 450px;
   background: #fff;
   bottom: 0;
   z-index: 500;
@@ -229,7 +229,7 @@ export default {
 }
 
 .modal-heading {
-  padding: 12px 20px 12px 30px;
+  padding: 20px 30px;
   color: #fff;
   background: linear-gradient(
     to right,
@@ -244,6 +244,7 @@ export default {
   top: 0;
   left: 0;
   right: 0;
+  font-size: 18px;
 }
 
 .js-per-list {

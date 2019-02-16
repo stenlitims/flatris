@@ -65,7 +65,7 @@ export default {
   },
 
   created() {
-    this.data = window.mirKv;
+    this.data = this.$store.state.permissions.mirkvartir;
     this.listO();
     this.getCids();
   },
@@ -80,7 +80,7 @@ export default {
       if (!this.data) return [];
       let data = [];
       let ids = [];
-      for (let item of this.data.permissions_tree) {
+      for (let item of this.data) {
         if (item.parent == "#" && item.state.selected) {
           let it = {
             id: item.permissions.gproject_id,

@@ -164,6 +164,7 @@ export default {
   created() {
     //if (!this.$store.state.myObjects) {
     this.$store.commit("loadMyObjects", "test");
+    this.$store.commit("loadMyObjects", "cms");
     //}
     window.routeParam = { ...this.$route };
     if (this.$route.params.id == "other") {
@@ -407,8 +408,8 @@ export default {
           border-right: none;
         }
         svg {
-          width: 36px;
-          height: 36px;
+          width: 22px;
+          height: 22px;
           fill: #36485a;
           margin-bottom: 7px;
           transition: all 0.3s ease;

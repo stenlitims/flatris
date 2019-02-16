@@ -173,6 +173,8 @@ export default {
     },
     clearUsers() {
       // console.log(234);
+     // this.$forceUpdate();
+      //return;
       this.userIds = [];
       this.$emit("userIds", []);
       for (let user in this.users) {

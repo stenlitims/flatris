@@ -4,7 +4,7 @@
 
     <div class="row">
       <div class="col-lg-6" v-for="(item, i) in list" :key="i">
-        <chObList class="text-border" :data="data.permissions_tree" :dataId="item"></chObList>
+        <chObList class="text-border" :data="data" :dataId="item"></chObList>
       </div>
     </div>
     
@@ -39,7 +39,8 @@ export default {
   },
 
   created() {
-    this.data = window.mirKv;
+  //  this.data = window.mirKv;
+    this.data = this.$store.state.permissions.mirkvartir;
     this.list = this.selMain();
     if (!this.list.length) {
       this.$bus.emit("setStep", 0);
@@ -55,7 +56,7 @@ export default {
     selMain() {
       if (!this.data) return [];
       let data = [];
-      for (let item of this.data.permissions_tree) {
+      for (let item of this.data) {
         if (item.parent == "#" && item.selected) {
           data.push(item.permissions.object_id);
         }
@@ -63,7 +64,7 @@ export default {
       return data;
     },
     getPerm() {
-      let f = this.lodash.filter(this.data.permissions_tree, item => {
+      let f = this.lodash.filter(this.data, item => {
         return item.state.selected == true;
       });
 
