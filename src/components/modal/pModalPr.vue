@@ -65,6 +65,7 @@ export default {
       this.data = this.$store.state.permissionsCMS[this.userId];
     } else {
       this.data = { ...this.$store.state.permissions.clear };
+    //  console.log(this.data);
       window.newUserPr = this.data;
       this.setAll();
     }

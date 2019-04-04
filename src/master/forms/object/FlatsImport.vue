@@ -1,22 +1,25 @@
 <template>
-  <div class="" :class="{'loader': pleloader == true}">
-
+  <div class :class="{'loader': pleloader == true}">
     <div v-if="!activeImport">
       <h3 class="text-center">Как вы хотите внести данные по квартирам?</h3>
-      <div class="list-import" >
-        <div class="item" 
-        :class="{'active': item.id == activeImport}" 
-        @click="activeImport = item.id"
-        v-for="(item, i) in varimport" :key="i">
+      <div class="list-import">
+        <div
+          class="item"
+          :class="{'active': item.id == activeImport}"
+          @click="activeImport = item.id"
+          v-for="(item, i) in varimport"
+          :key="i"
+        >
           <div class="cr"></div>
-          <div class="img"><img :src="'http://flatris.com.ua/assets/images/import/'+item.img" alt=""></div>
+          <div class="img">
+            <img :src="'https://flatris.com.ua/assets/images/import/'+item.img" alt>
+          </div>
           <div class="title">{{item.name}}</div>
         </div>
       </div>
     </div>
 
     <div v-if="activeImport == 2">
-      
       <h3 class="text-center">Заполнение таблицы с квартирами онлайн</h3>
 
       <div v-if="innerStep == 0">
@@ -25,45 +28,58 @@
           <p>Что бы начать заполнять таблицу с квартирами укажите вашу почту на gmail</p>
         </div>
 
-        <form action="" class="form gmail-form">
+        <form action class="form gmail-form">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <input type="email" v-model="form.email" placeholder="введите GMAIL" class="form-control">
+                <input
+                  type="email"
+                  v-model="form.email"
+                  placeholder="введите GMAIL"
+                  class="form-control"
+                >
               </div>
               <div class="form-group">
-                <button type="button" @click.prevent="sendEmail" class="btn-default btn-md waves-effect waves-light">ПОДТВЕРДИТЬ</button>
+                <button
+                  type="button"
+                  @click.prevent="sendEmail"
+                  class="btn-default btn-md waves-effect waves-light"
+                >ПОДТВЕРДИТЬ</button>
               </div>
             </div>
           </div>
         </form>
-
       </div>
-       <div v-if="innerStep == 1">
-          <div class="text-inner text-center">
+      <div v-if="innerStep == 1">
+        <div class="text-inner text-center">
           <p>Для перехода на следующий шаг, необходимо заполнить таблицу с квартирами.</p>
-          <p>Если возникнут сложности, посмотрите <a href=""> короткое видео как заполнять таблицу</a></p>
+          <p>
+            Если возникнут сложности, посмотрите
+            <a href>короткое видео как заполнять таблицу</a>
+          </p>
         </div>
 
         <div class="text-center btns-big">
-          <a href="#"
-              @click.prevent="showTable"
-           target="_blank" class="btn-default btn-md waves-effect waves-light">ЗАПОЛНИТЬ ТАБЛИЦУ С КВАРТИРАМИ</a> <br><br>
-          <a href="#"
-          @click.prevent="activeImport = 'googleEmails'"
-           class="btn-default btn-md waves-effect waves-light">РЕДАКТИРОВАТЬ ПРАВА ДОСТУПА К ТАБЛИЦЕ</a>
+          <a
+            href="#"
+            @click.prevent="showTable"
+            target="_blank"
+            class="btn-default btn-md waves-effect waves-light"
+          >ЗАПОЛНИТЬ ТАБЛИЦУ С КВАРТИРАМИ</a>
+          <br>
+          <br>
+          <a
+            href="#"
+            @click.prevent="activeImport = 'googleEmails'"
+            class="btn-default btn-md waves-effect waves-light"
+          >РЕДАКТИРОВАТЬ ПРАВА ДОСТУПА К ТАБЛИЦЕ</a>
         </div>
-
       </div>
-      
     </div>
 
-   <div class="container"  v-if="activeImport == 'googleEmails'">
-    <google-emails @saveEmails="saveEmails" :spreadsheet_id="spreadsheet_id"></google-emails>
-   </div>
-    
- 
-
+    <div class="container" v-if="activeImport == 'googleEmails'">
+      <google-emails @saveEmails="saveEmails" :spreadsheet_id="spreadsheet_id"></google-emails>
+    </div>
   </div>
 </template>
 
@@ -124,9 +140,7 @@ export default {
     this.$bus.off("formData", this.setTypeForm);
   },
   mounted() {},
-  updated() {
-   
-  },
+  updated() {},
   computed: {},
   methods: {
     saveEmails() {
@@ -171,8 +185,9 @@ export default {
                 this.form.active = true;
               }
               this.form.email = data.email;
-              this.pleloader = false;
             }
+
+            this.pleloader = false;
           }
         },
         "json"

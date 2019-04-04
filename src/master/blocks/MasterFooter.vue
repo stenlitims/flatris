@@ -14,7 +14,7 @@
         <!-- <button @click="clear" class="btn btn-md btn-clear waves-effect">Очистить</button>  -->
       </div>
 
-      <div class="save" v-if="$store.state.changes.count.length">
+      <div class="save" v-if="$store.state.changes.count.length && this.ifCanSave">
         <button
           @click="$bus.emit('saveForm', 'save')"
           class="btn-line btn-md waves-effect"
@@ -66,6 +66,11 @@ export default {
     };
   },
   computed: {
+    // кнопка сохранить  
+    ifCanSave(){
+      if(this.$route.name == 'new_object' && !this.object_id) return false;
+      return true;
+    },
     btnActive() {
       if (this.step == "finish") return false;
       if (this.steps[this.step].btnActive) {
@@ -76,6 +81,7 @@ export default {
   },
   created() {
     this.$bus.on("activeBtn", this.activeBtn);
+ //   console.log(this.$route);
   },
 
   beforeDestroy() {

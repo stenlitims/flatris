@@ -65,7 +65,7 @@
         <div class="col-md-9 col-lg-10 settings-content">
           <!-- <div style="display:none">{{$route.name}} {{$route.params.id}}</div> -->
           <!-- <transition name="center" mode="out-in"></transition> -->
-          <component :is="component" @userIds="userIds = $event"></component>
+          <component :is="component" @userIds="userIds = $event" ref="comSetting"></component>
         </div>
       </div>
     </div>

@@ -329,7 +329,8 @@ export default {
   .img-m {
     height: 140px;
     img {
-      max-height: 140px;
+      height: 140px;
+      object-fit: contain;
     }
   }
 

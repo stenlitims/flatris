@@ -55,7 +55,9 @@ export default {
 
   created() {},
 
-  mounted() {},
+  mounted() {
+    // console.log(this.$refs);
+  },
   computed: {},
   methods: {
     validForm(user = null) {
@@ -134,7 +136,7 @@ export default {
             // this.$store.commit("loadRmodal", {
             //   type: null
             // });
-            // this.$bus.emit("clearUsers", []);
+            //
           }
         },
         "json"
@@ -148,7 +150,9 @@ export default {
         //  console.log(pr[user]);
 
         $.ajax({
-          url: this.$root.mainurl + "/api?action=updateUserPermissions&ut=cms",
+          url:
+            this.$store.state.mainurl +
+            "/api/?action=updateUserPermissions&ut=cms",
           dataType: "json",
           data: {
             permissions_data: JSON.stringify(pr[user]),
@@ -156,17 +160,17 @@ export default {
           },
           method: "POST"
         }).done(response => {
-          console.log("save user" + user, response);
+        //  console.log("save user" + user, response);
         });
       }
 
       setTimeout(() => {
-        location.reload();
-        // this.$store.commit("loadPermissionsCMS", this.userIds);
-        // setTimeout(() => {
-        //   for (let user of this.userIds) {
-        //   }
-        // }, 1000);
+        this.$store.commit("getUsers");
+        this.$store.commit("loadUserPermissions");
+        this.$store.commit("loadRmodal", {
+          type: null
+        });
+        this.$bus.emit("clearUsers", []);
       }, 2000);
     },
     send(data) {

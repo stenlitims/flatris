@@ -54,7 +54,7 @@
               >
             </label>
 
-            <div v-if="form.logo" class="obj-logo">
+            <div v-else class="obj-logo">
               <img :src="form.logo">
               <br>
               <div class="del-btn abs" @click="delFile('logo', ()=> setChanges('logo'))">
@@ -240,6 +240,7 @@ export default {
         success: data => {
           // console.log(data);
           if (!data.errors) {
+            if(data.logo) this.form.logo = data.logo;
             if (!this.object_id) this.$emit("objId", data);
             this.formChange = false;
             if (e == "save") {

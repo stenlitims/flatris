@@ -156,6 +156,9 @@ export default new Vuex.Store({
         state.mainurl + "/api?action=getUserPermissions&ut=" + payload,
         data => {
           //  console.log(data);
+          if (data.error) {
+            return false;
+          }
           state.permissions[payload] = data.data.permissions_tree;
           if (payload == 'web') {
 
@@ -177,6 +180,9 @@ export default new Vuex.Store({
         $.get(
           state.mainurl + "/api?action=getUserPermissions&ut=cms&agent_id=" + item,
           data => {
+            if (data.error) {
+              return false;
+            }
             //  console.log(data);
 
             for (let it of data.data.permissions_tree) {

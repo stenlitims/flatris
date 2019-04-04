@@ -97,13 +97,18 @@ export default {
 
     setChanges(item, mod = null, original = null) {
 
+      console.log(item);
+
+
+
       this.changes = this.$store.state.changes;
 
       if (mod == null && original == null) {
         if (!this.original || !this.form) return;
         //  if (!this.original[item]) return;
-        original = this.original[item].trim();
-        mod = this.form[item].trim();
+
+        original = $.trim(this.original[item]);
+        mod = $.trim(this.form[item]);
       }
 
       if (original != mod) {
@@ -118,6 +123,12 @@ export default {
       // console.log(this.changes.count);
 
       this.$store.commit("setChanges", this.changes);
+
+      if (item == 'logo' && !this.$store.state.changes.count.length) {
+        this.$store.commit("setChanges", {
+          count: [item]
+        });
+      }
 
     },
 
@@ -313,7 +324,7 @@ export default {
         sep = typeof thousands_sep === "undefined" ? " " : thousands_sep,
         dec = typeof dec_point === "undefined" ? "." : dec_point,
         s = "",
-        toFixedFix = function(n, prec) {
+        toFixedFix = function (n, prec) {
           var k = Math.pow(10, prec);
           return "" + (Math.round(n * k) / k).toFixed(prec);
         };

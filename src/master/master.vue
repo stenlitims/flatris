@@ -100,6 +100,7 @@ export default {
       first_load: true,
       finish: null,
       open: false,
+      masterDb: {},
       url: {
         name: "",
         oid: ""
@@ -226,6 +227,22 @@ export default {
     setObjId(data) {
       if (data.id) this.object_id = data.id;
       if (!this.newm) this.name = data.name;
+
+      if (!this.masterDb.object_id) {
+        $.post(
+          this.$root.apiurl,
+          {
+            action: "setState",
+            data: {
+              master: "object",
+              object_id: this.object_id
+            }
+          },
+          data => {
+            console.log(data);
+          }
+        );
+      }
     },
 
     getMaster(firstLoad) {
@@ -268,6 +285,7 @@ export default {
         },
         data => {
           if (data.steps) {
+            this.masterDb = data;
             for (let item in data.steps) {
               if (!this.steps[item]) break;
               if (data.steps[item].complete == "false") {
