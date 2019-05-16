@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="form-group">
-            <label>Название объекта</label>
+            <label>Название объекта *</label>
             <input
               type="text"
               class="form-control"
@@ -29,7 +29,7 @@
         </div>
         <div class="col-lg-6">
           <div class="form-group">
-            <label>Валюта продаж</label>
+            <label>Валюта продаж *</label>
             <select v-model="form.currency" class="form-control" @change="setChanges('currency')">
               <option v-for="(item, i) in currency" :value="i" :key="i">{{i}} - {{item}}</option>
             </select>
@@ -66,7 +66,7 @@
 
         <div class="col-lg-12">
           <div class="form-group">
-            <label>Адрес объекта</label>
+            <label>Адрес объекта *</label>
             <input
               type="text"
               class="form-control"

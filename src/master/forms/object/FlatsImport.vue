@@ -53,26 +53,27 @@
       <div v-if="innerStep == 1">
         <div class="text-inner text-center">
           <p>Для перехода на следующий шаг, необходимо заполнить таблицу с квартирами.</p>
-          <p>
+          <!-- <p>
             Если возникнут сложности, посмотрите
             <a href>короткое видео как заполнять таблицу</a>
-          </p>
+          </p>-->
         </div>
-
-        <div class="text-center btns-big">
-          <a
-            href="#"
-            @click.prevent="showTable"
-            target="_blank"
-            class="btn-default btn-md waves-effect waves-light"
-          >ЗАПОЛНИТЬ ТАБЛИЦУ С КВАРТИРАМИ</a>
-          <br>
-          <br>
-          <a
-            href="#"
-            @click.prevent="activeImport = 'googleEmails'"
-            class="btn-default btn-md waves-effect waves-light"
-          >РЕДАКТИРОВАТЬ ПРАВА ДОСТУПА К ТАБЛИЦЕ</a>
+        <div class="text-center">
+          <div class="btns-big">
+            <a
+              href="#"
+              @click.prevent="showTable"
+              target="_blank"
+              class="btn-default btn-md waves-effect waves-light"
+            >ЗАПОЛНИТЬ ТАБЛИЦУ С КВАРТИРАМИ</a>
+            <br>
+            <br>
+            <a
+              href="#"
+              @click.prevent="activeImport = 'googleEmails'"
+              class="btn-line btn-md waves-effect waves-light"
+            >РЕДАКТИРОВАТЬ ПРАВА ДОСТУПА К ТАБЛИЦЕ</a>
+          </div>
         </div>
       </div>
     </div>
@@ -230,7 +231,17 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.btns-big {
+  display: inline-block;
+  a {
+    width: 100%;
+  }
+  .btn-line {
+    border-color: #5fbeaa !important;
+    color: #5fbeaa;
+  }
+}
 .list-import {
   display: flex;
   align-items: center;

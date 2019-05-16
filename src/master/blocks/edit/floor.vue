@@ -86,6 +86,8 @@ export default {
           if (data.type == "success") {
             // this.success = true;
 
+            this.setComp(this.form.id, 'fl');
+
             if (data.data.img) {
               this.form.img = data.data.img;
               this.form.complete = true;

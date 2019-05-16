@@ -1,26 +1,40 @@
 <template>
   <div class="form">
-    <h4 class="text-center">Выберите язык(и) для вашего интерактивного каталога</h4>
+    <h4 class="text-center">Выберите вариант дизайна страницы "Выбор квартир" для Вашего сайта</h4>
+    <div class="select-type-web" :data-type="webchess.type">
+      <div class="item" :class="{'active': form.type == 1}">
+        <div class="ch" @click="$set(form, 'type', 1)"></div>
+        <div class="title">Вариант 1</div>
+        <div class="text">
+          <p>В данном варианте у вас в одном интерфейсе будет сразу 4 представления по выбору квартир:</p>
 
-    <div class="list-langs" v-if="object">
-      <div class="row">
-        <div class="col-sm-4 col-md-3"></div>
-        <div class="col-sm-8 col-md-9">
-          <div class="list-title">Укажите название объекта на выбранном языке</div>
+          <ul>
+            <li>выбор с ген плана</li>
+            <li>список квартир</li>
+            <li>планировки квартир</li>
+            <li>шахматка квартир</li>
+          </ul>
+        </div>
+
+        <div class="btns text-center">
+          <button class="btn btn-md waves-effect">Посмотреть пример</button>
         </div>
       </div>
-      <div class="row" v-for="(item, i) in langs" :key="i">
-        <div class="col-sm-4 col-md-3">
-          <label class="cus-check big">
-            <input type="checkbox" v-model="item.selected" @change="setChanges2('langs')">
-            <span class="ch"></span>
-            <span class="title">{{item.lang}}</span>
-          </label>
+      <div class="item" :class="{'active': form.type == 2}">
+        <div class="ch" @click="$set(form, 'type', 2)"></div>
+        <div class="title">Вариант 2</div>
+        <div class="text">
+          <p>В данном варианте у вас будет классический подбор квартир как у лучших сайтов жилых комплексов:</p>
+
+          <ul>
+            <li>выбор с ген плана</li>
+            <li>подбор по параметрам</li>
+            <li>избранное</li>
+          </ul>
         </div>
-        <div class="col-sm-8 col-md-9">
-          <div class="form-group" :data-upd="upd">
-            <input type="text" class="form-control" @keyup="setChanges2('langs')" v-model="item.name">
-          </div>
+
+        <div class="btns text-center">
+          <button class="btn btn-md waves-effect">Посмотреть пример</button>
         </div>
       </div>
     </div>
@@ -35,122 +49,39 @@ export default {
   mixins: [masterMixin],
   data() {
     return {
-      errors: [],
-      success: false,
-      langs: {
-        en: { lang: "Английский" },
-        ru: { lang: "Русский", selected: true },
-        uk: { lang: "Украинский" },
-        by: { lang: "Белорусский" },
-        kz: { lang: "Казахский" }
-      },
-      object: {},
       form: {},
       original: {},
-      upd: false,
       required: {}
     };
   },
-  created() {
-    this.getOject();
-    this.getLang();
+
+  created() {},
+  updated() {
+    if (!this.form.type) {
+      this.$emit("btnActive", false);
+    } else {
+      this.$emit("btnActive", true);
+    }
   },
-  updated() {},
-  mounted() {
-    this.$emit("btnActive", !this.error.length);
-  },
+  mounted() {},
   methods: {
-    getOject() {
-      if (window.prObj) {
-        if (window.prObj[this.object_id]) {
-          this.object = window.prObj[this.object_id];
-          if (!this.langs.ru.name) this.langs.ru.name = this.object.name;
-          return;
-        }
-      }
-      $.post(
-        this.$root.apiurl,
-        {
-          action: "getGproject",
-          id: this.object_id
-        },
-        data => {
-          if (data) {
-            this.object = data;
-            if (!window.prObj) window.prObj = {};
-            window.prObj[this.object_id] = data;
-            if (!this.langs.ru.name) this.langs.ru.name = this.object.name;
-          }
-        },
-        "json"
-      );
-    },
+    save(e){
 
-    getLang() {
-      $.post(
-        this.$root.apiurl,
-        {
-          action: "getWebchessPrLang",
-          id: this.object_id
-        },
-        data => {
-          if (data) {
-            for (let i in data) {
-              if (data[i].selected == "true") {
-                this.langs[i].selected = true;
-              } else {
-                this.langs[i].selected = false;
-              }
-              this.langs[i].name = data[i].name;
-            }
-          }
-          this.upd = "upd";
-        },
-        "json"
-      );
     },
-
     send(e) {
-      if (e == "prev") {
-        this.$emit("footerBtn", e);
-        return true;
-      }
-
-      if (!this.formChange) this.$emit("footerBtn", e);
-
-      this.save(e);
-    },
-
-    save(e) {
-      let lang = {};
-      let i1 = 0;
-      for (let i in this.langs) {
-        if (this.langs[i].name !== undefined) {
-          lang[i] = this.langs[i];
-          i1++;
-        }
-      }
-
-      if (!i1) {
+      if (!this.form.type) {
         return;
       }
-
       $.post(
-        this.$root.apiurl,
+        this.$store.state.apiurl,
         {
-          action: "setWebchessPrLang",
-          id: this.object_id,
-          lang: lang
+          action: "setWebchess",
+          id: this.$route.params.oid,
+          data: this.form
         },
         data => {
-          if (data) {
-            if (e == "save") {
-              this.original = Object.assign({}, this.form);
-              this.saveOk();
-            } else {
-              this.$emit("footerBtn", e);
-            }
-          }
+          this.$emit("footerBtn", e);
+          return true;
         },
         "json"
       );
@@ -160,14 +91,68 @@ export default {
 </script>
 
 <style lang="scss">
-.list-langs {
-  margin-top: 40px;
-  .cus-check {
-    margin-top: 5px;
+.select-type-web {
+  display: flex;
+  justify-content: center;
+  .item {
+    position: relative;
+    width: 40%;
+    padding: 30px 20px;
+    margin: 0 5%;
+    border-radius: 5px;
+    border: 1px solid #5fbeaa;
+    transition: all 0.3s ease;
+
+    .ch {
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      border: 2px solid #5fbeaa;
+      border-radius: 50%;
+      right: 10px;
+      top: 10px;
+      cursor: pointer;
+      &.active {
+      }
+    }
+    &.active {
+      background: rgba(95, 190, 170, 0.1);
+      .ch {
+        &:before {
+          content: "";
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          width: 7px;
+          height: 12px;
+          border-bottom: 2px solid #5fbeaa;
+          border-right: 2px solid #5fbeaa;
+          transform: translate(-50%, -60%) rotate(45deg);
+        }
+      }
+    }
   }
-  .list-title {
-    margin-bottom: 8px;
-    padding-left: 7px;
+  .title {
+    font-size: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .text {
+    min-height: 155px;
+    margin-bottom: 10px;
   }
 }
+
+
+@media (max-width: 991px) {
+  .select-type-web{
+    display: block;
+    .item{
+      width: auto;
+      margin-bottom: 15px;
+    }
+  }
+}
+
+
 </style>

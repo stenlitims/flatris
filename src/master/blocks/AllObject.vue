@@ -1,110 +1,122 @@
 <template>
-<div>
-  
-  <div class="all-object" :class="{'loader': loader}">
-    
-    <div class="list-ob">
-      <div class="of-list c-sc">
-
-
-
-      
-       <div class="item">
-         <div style="display:none">{{completeForm}}</div>
-          <div :class="{'active':active_id == object.id, 'complete': object.complete}" class="line"><div class="name">{{object.name}} <i></i> </div> 
-          <button @click="edit(object, 'EditObject')" class="btn btn-md waves-effect">
-            <span class="mob-none">Заполнить</span>
-            <span class="mob-el">
-            <svg class="icon">
-                <use xlink:href="#ico-edit"></use>
-            </svg>
-            </span>
-            </button></div>  
-          <div class="in-list">
-
-
-
-        <div class="item" v-for="(building, i) in buildings" :key="i">
-          <div style="display:none">{{completeForm}}</div>
-          <div :class="{'active':active_id == building.id, 'complete': building.complete}" class="line"><div class="name">Дом {{building.name}} <i></i> </div> 
-          <button @click="edit(building, 'EditBuilding')" class="btn btn-md waves-effect">
-            <span class="mob-none">Заполнить</span>
-            <span class="mob-el">
-            <svg class="icon">
-                <use xlink:href="#ico-edit"></use>
-            </svg>
-            </span>
-            </button></div> 
-          <div class="in-list">
-
-
-            <div class="item" v-for="(section, si) in sections[i]" :key="si">
-              <div style="display:none">{{completeForm}}</div>
-              <div :class="{'active':active_id == section.id, 'complete': section.complete}" class="line"><div class="name">Секция {{section.name}} <i></i></div> 
-              <button @click="edit(section, 'EditSection')" class="btn btn-md waves-effect">
+  <div>
+    <div class="all-object" :class="{'loader': loader}">
+      <div class="list-ob">
+        <div class="of-list c-sc">
+          <div class="item">
+            <div
+              :class="{'active':active_id == cObject.id, 'complete': checkGal.includes('g'+cObject.id)}"
+              class="line"
+            >
+              <div class="name">
+                {{cObject.name}}
+                <i></i>
+              </div>
+              <button @click="edit(cObject, 'EditObject')" class="btn btn-md waves-effect">
                 <span class="mob-none">Заполнить</span>
                 <span class="mob-el">
-                <svg class="icon">
+                  <svg class="icon">
                     <use xlink:href="#ico-edit"></use>
-                </svg>
+                  </svg>
                 </span>
-                </button> </div>
-              <div class="in-list" v-if="floors">
-
-                <div class="item" v-for="(floor, fi) in floors[si]" :key="fi">
-                  <div style="display:none">{{completeForm}}</div>
-                  <div class="line" :class="{'active':active_id == floor.id, 'complete': floor.complete}"> 
-                    <div class="name">Этаж  {{floor.name}} <i></i></div>
-                    <button @click="edit(floor, 'EditFloor')" class="btn btn-md waves-effect">
-                      <span class="mob-none">Заполнить</span>
-                      <span class="mob-el">
-                      <svg class="icon">
-                          <use xlink:href="#ico-edit"></use>
-                      </svg>
-                      </span>
-                      </button>  
+              </button>
+            </div>
+            <div class="in-list">
+              <div class="item" v-for="(building, i) in buildings" :key="i">
+                <div style="display:none">{{completeForm}}</div>
+                <div
+                  :class="{'active':active_id == building.id, 'complete': checkGal.includes('-'+building.id)}"
+                  class="line"
+                >
+                  <div class="name">
+                    Дом {{building.name}}
+                    <i></i>
                   </div>
-                  <div class="in-list" v-if="floor">
-                    
-                
-                        <div class="item" v-for="(plan, pi) in floor.plans" :key="pi">
-                          <div style="display:none">{{completeForm}}</div>
-                         <div :class="{'active':active_id == plans[si][plan].id, 'complete': plans[si][plan].complete}" class="line">
-                            <div class="name">Планировка {{plans[si][plan].name}} <i></i> </div>
-                          <button  @click="edit(plans[si][plan], 'EditPlan')" class="btn btn-md waves-effect">
+                  <button @click="edit(building, 'EditBuilding')" class="btn btn-md waves-effect">
+                    <span class="mob-none">Заполнить</span>
+                    <span class="mob-el">
+                      <svg class="icon">
+                        <use xlink:href="#ico-edit"></use>
+                      </svg>
+                    </span>
+                  </button>
+                </div>
+                <div class="in-list">
+                  <div class="item" v-for="(section, si) in sections[i]" :key="si">
+                    <div style="display:none">{{completeForm}}</div>
+                    <div
+                      :class="{'active':active_id == section.id, 'complete': checkGal.includes('-'+section.id)}"
+                      class="line"
+                    >
+                      <div class="name">
+                        Секция {{section.name}}
+                        <i></i>
+                      </div>
+                      <button @click="edit(section, 'EditSection')" class="btn btn-md waves-effect">
+                        <span class="mob-none">Заполнить</span>
+                        <span class="mob-el">
+                          <svg class="icon">
+                            <use xlink:href="#ico-edit"></use>
+                          </svg>
+                        </span>
+                      </button>
+                    </div>
+                    <div class="in-list" v-if="floors">
+                      <div class="item" v-for="(floor, fi) in floors[si]" :key="fi">
+                        <div
+                          class="line"
+                          :class="{'active':active_id == floor.id, 'complete': checkGal.includes('fl'+floor.id)}"
+                        >
+                          <div class="name">
+                            Этаж {{floor.name}}
+                            <i></i>
+                          </div>
+                          <button @click="edit(floor, 'EditFloor')" class="btn btn-md waves-effect">
                             <span class="mob-none">Заполнить</span>
                             <span class="mob-el">
                               <svg class="icon">
-                                  <use xlink:href="#ico-edit"></use>
+                                <use xlink:href="#ico-edit"></use>
                               </svg>
-                              </span>
-                            </button> </div> 
-                          <div class="in-list">
+                            </span>
+                          </button>
+                        </div>
+                        <div class="in-list" v-if="floor">
+                          <div class="item" v-for="(plan, pi) in floor.plans" :key="pi">
+
+                            <div
+                              :class="{'active':active_id == plans[si][plan].id, 'complete': checkGal.includes('pl'+plans[si][plan].id)}"
+                              class="line"
+                            >
+                              <div class="name">
+                                Планировка {{plans[si][plan].name}}
+                                <i></i>
+                              </div>
+                              <button
+                                @click="edit(plans[si][plan], 'EditPlan')"
+                                class="btn btn-md waves-effect"
+                              >
+                                <span class="mob-none">Заполнить</span>
+                                <span class="mob-el">
+                                  <svg class="icon">
+                                    <use xlink:href="#ico-edit"></use>
+                                  </svg>
+                                </span>
+                              </button>
+                            </div>
+                            <div class="in-list"></div>
                           </div>
                         </div>
-                   
-                    
+                      </div>
+                    </div>
                   </div>
                 </div>
-
               </div>
             </div>
-
-          </div>
-
-          </div>
-
           </div>
         </div>
-
-
-
       </div>
-      
     </div>
   </div>
-</div>
-  
 </template>
 
 <script>
@@ -136,8 +148,18 @@ export default {
   mounted() {
     //console.log(this.$root.isMobile);
   },
-  computed: {},
+  computed: {
+    cObject() {
+      let t = { ...this.object };
+      return this.object;
+    },
+    checkGal() {
+      return this.$store.state.checkGal;
+    }
+  },
   methods: {
+    // порверка галочки
+
     setCompleteForm(id) {
       this.completeForm = id;
     },
@@ -281,15 +303,14 @@ export default {
       fill: #fff;
     }
   }
-  .list-ob .line.active .btn{
-    svg{
+  .list-ob .line.active .btn {
+    svg {
       fill: #505458;
     }
   }
-  .list-ob .line .name{
+  .list-ob .line .name {
     font-size: 13px;
-        padding: 7px 40px 7px 10px;
+    padding: 7px 40px 7px 10px;
   }
-  
 }
 </style>

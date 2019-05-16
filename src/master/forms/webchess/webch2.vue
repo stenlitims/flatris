@@ -1,20 +1,51 @@
 <template>
-  <div class="form">
-    <h4 class="text-center">Выберите поля, которые хотите отображать на сайте</h4>
-    <div class="list-fields-wrap">
-      <div class="list-fields">
-        <div class="item" v-for="(item, i) in fields" :key="i">
-          <label class="cus-check" :class="{'fields_hidden': item.hide}">
-            <input
-              type="checkbox"
-              @change="setInput(i)"
-              v-model="item.checked"
-              :disabled="item.disabled"
-              
-            >
-            <span class="ch"></span>
-            <span class="title">{{item.name}}</span>
-          </label>
+  <div class>
+    <h4 class="text-center">Выбор страниц веб-шахматки, языка и объектов для вашей шахматки</h4>
+    <div class="row">
+      <div class="col-lg-4 col-xl-3">
+        <h4 class="master-sidebar-title">РАЗДЕЛЫ</h4>
+        <div class="master-sidebar">
+          <div href="#views" @click="linkScroll('#views')" class="item active">
+            <div class="title">
+              <div class="num">1</div>Выбор страниц
+            </div>
+            <div
+              class="text"
+            >Выберите какие именно страницы Вам нужны и укажите их очередность показа</div>
+          </div>
+          <div href="#lang" @click="linkScroll('#lang')" class="item">
+            <div class="title">
+              <div class="num">2</div>Выбор языка
+            </div>
+            <div class="text">Выберите язык(и) на котором вы хотите разместить шахматку на сайте</div>
+          </div>
+          <div href="#permission" @click="linkScroll('#permission')" class="item">
+            <div class="title">
+              <div class="num">3</div>Выбор домов / секций
+            </div>
+            <div class="text">Выберите дома и секции, которые хотите отображать на сайте</div>
+          </div>
+          <div href="#fields" @click="linkScroll('#fields')" class="item">
+            <div class="title">
+              <div class="num">4</div>Выбор полей
+            </div>
+            <div class="text">Выберите поля, которые хотите отображать на сайте</div>
+          </div>
+          <div href="#status" @click="linkScroll('#status')" class="item">
+            <div class="title">
+              <div class="num">5</div>Подмена статусов
+            </div>
+            <div class="text">Подмените статусы квартир, которые не хотите показывать на сайте</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-xl-9">
+        <div class="form r-content-master c-sc" @scroll="onScroll">
+          <views></views>
+          <lang></lang>
+          <permission></permission>
+          <fields></fields>
+          <status></status>
         </div>
       </div>
     </div>
@@ -23,10 +54,22 @@
 
 <script>
 import masterMixin from "@/mixin/masterMixin";
+import views from "@/master/forms/webchess/el/views";
+import lang from "@/master/forms/webchess/el/lang";
+import permission from "@/master/forms/webchess/el/permission";
+import status from "@/master/forms/webchess/el/status";
+import fields from "@/master/forms/webchess/el/fields";
 
 export default {
   name: "webCh2",
   mixins: [masterMixin],
+  components: {
+    views,
+    lang,
+    permission,
+    fields,
+    status
+  },
   data() {
     return {
       errors: [],
@@ -37,96 +80,19 @@ export default {
       required: {}
     };
   },
-  created() {
-    this.getFields();
-  },
+  created() {},
   updated() {},
   mounted() {
     this.$emit("btnActive", !this.error.length);
   },
   methods: {
-    getFields() {
-      $.post(
-        this.$root.apiurl,
-        {
-          action: "getFields",
-          id: this.object_id
-        },
-        data => {
-          if (data) {
-            this.fields = data;
-          }
-        },
-        "json"
-      );
-    },
-
-    setInput(key) {
-      if (key == "price") {
-        this.fields.price_m2.checked = !this.fields.price_m2.checked;
-        this.fields.discount_price_m2.checked = !this.fields.discount_price_m2
-          .checked;
-        this.fields.discount_price.checked = !this.fields.discount_price
-          .checked;
-      }
-
-      this.setChanges2('fields');
-    },
-
     send(e) {
-      if (e == "prev") {
-        this.$emit("footerBtn", e);
-        return true;
-      }
-
-      if (!this.formChange) this.$emit("footerBtn", e);
-      this.save(e);
-    },
-    save(e) {
-      let fields = {};
-
-      for (let i in this.fields) {
-        if (this.fields[i].checked) {
-          fields[i] = 1;
-        } else {
-          fields[i] = -1;
-        }
-      }
-
-      // console.log(fields);
-
-      $.post(
-        this.$root.apiurl,
-        {
-          action: "setFields",
-          id: this.object_id,
-          data: fields
-        },
-        data => {
-          if (data) {
-            if (e == "save") {
-              this.original = Object.assign({}, this.form);
-              this.saveOk();
-            } else {
-              this.$emit("footerBtn", e);
-            }
-          }
-        },
-        "json"
-      );
+      this.$emit("footerBtn", e);
+      return true;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped>
-.list-fields-wrap {
-  display: flex;
-  justify-content: center;
-}
-.list-fields {
-  .item {
-    margin-bottom: 5px;
-  }
-}
+<style lang="scss">
 </style>

@@ -9,6 +9,8 @@ import instCRM from '@/components/instCRM.vue'
 import portals from '@/components/portals.vue'
 import instAgent from '@/components/instAgent.vue'
 import instApi from '@/components/instApi.vue'
+import instMob from '@/components/instMob.vue'
+import settingMob from '@/components/settingMob.vue'
 
 
 
@@ -51,6 +53,17 @@ export default new Router({
       component: instApi,
     },
     {
+      path: '/inst/mob',
+      name: 'instMob',
+      component: instMob,
+    },
+    {
+      path: '/settings',
+      name: 'settingMob',
+      component: settingMob,
+    },
+
+    {
       path: '/settings/:id',
       name: 'settings',
       component: settings,
@@ -75,6 +88,10 @@ export default new Router({
     }, {
       path: '/webchess/:oid/step/:id',
       name: 'webchess',
+      component: Master,
+    }, {
+      path: '/new_webchess/:oid/step/:id',
+      name: 'new_webchess',
       component: Master,
     }, {
       path: '/new_agent/:id',

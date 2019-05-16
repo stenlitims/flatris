@@ -93,7 +93,7 @@ export default {
       $.ajax({
         url:
           this.$root.mainurl +
-          "/api?action=updateUserPermissions&ut=mirkvartir",
+          "/api/?action=updateUserPermissions&ut=mirkvartir",
         dataType: "json",
         data: { permissions_data: JSON.stringify(data_to_send) },
         method: "POST"

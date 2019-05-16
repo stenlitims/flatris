@@ -1,6 +1,6 @@
 <template>
-  <div class="form">
-    <h4 class="text-center">Подмените статусы, которые не хотите показывать на сайте</h4>
+  <div class="f-item" id="status">
+    <h4 class="text-center">ПОДМЕНИТЕ СТАТУСЫ КВАРТИР, КОТОРЫЕ НЕ ХОТИТЕ ПОКАЗЫВАТЬ НА САЙТЕ</h4>
 
     <div class="list-status" v-if="status">
       <div class="row" v-for="(item, i) in status" :key="i">
@@ -9,27 +9,28 @@
           <div class="form-control">{{item.name}}</div>
         </div>
         <div class="col-6">
-          <select class="form-control"  @change="setChanges2('status')" v-model="item.status">
+          <select class="form-control" @change="btns = true" v-model="item.status">
             <option
               v-for="(it, i) in status"
               :key="i"
               :value="it.id"
               :selected="it.id == it.status"
-              
             >{{it.name}}</option>
           </select>
         </div>
       </div>
     </div>
+
+    <div class="status-btns text-center" v-if="btns">
+      <button class="btn-line btn-md waves-effect" @click="save">Сохранить</button>
+      <button class="btn-md btn-outline-primary waves-effect" @click="getStatus">Отмена</button>
+    </div>
   </div>
 </template>
 
 <script>
-import masterMixin from "@/mixin/masterMixin";
-
 export default {
-  name: "webCh4",
-  mixins: [masterMixin],
+  name: "status",
   data() {
     return {
       errors: [],
@@ -37,42 +38,30 @@ export default {
       form: {},
       status: {},
       upd: false,
-      required: {}
+      btns: false
     };
   },
   created() {
     this.getStatus();
   },
   updated() {},
-  mounted() {
-    this.$emit("btnActive", !this.error.length);
-  },
+  mounted() {},
   methods: {
     getStatus() {
       $.post(
         this.$root.apiurl,
         {
           action: "getStatus",
-          id: this.object_id
+          id: this.$route.params.oid
         },
         data => {
           if (data) {
             this.status = data;
-            //   console.log(data);
+            this.btns = false;
           }
         },
         "json"
       );
-    },
-
-    send(e) {
-      if (e == "prev") {
-        this.$emit("footerBtn", e);
-        return true;
-      }
-
-      if (!this.formChange) this.$emit("footerBtn", e);
-      this.save(e);
     },
     save(e) {
       let status = {};
@@ -84,16 +73,13 @@ export default {
         this.$root.apiurl,
         {
           action: "setStatus",
-          id: this.object_id,
+          id: this.$route.params.oid,
           data: status
         },
         data => {
           if (data) {
-            if (e == "save") {
-              this.saveOk();
-            } else {
-              this.$emit("footerBtn", e);
-            }
+            this.saveOk();
+            this.btns = false;
           }
         },
         "json"
@@ -104,7 +90,15 @@ export default {
 </script>
 
 <style lang="scss">
+.status-btns {
+  margin-top: 30px;
+  > * {
+    margin: 0 10px;
+  }
+}
 .list-status {
+  padding-left: 30px;
+  padding-right: 30px;
   .row {
     margin-bottom: 25px;
     margin-right: -30px;

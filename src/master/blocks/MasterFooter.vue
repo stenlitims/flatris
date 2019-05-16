@@ -34,7 +34,8 @@
 
         <div v-if="finishTxt" class="finish-btns">
           <div v-if="steps[step].comp == 'objectDetail'">
-            <button
+            <button 
+              v-if="$route.name != 'new_webchess'"
               @click="finish(true)"
               class="btn-line btn-finish btn-md btn-next waves-effect"
             >Пропустить</button>
@@ -68,7 +69,8 @@ export default {
   computed: {
     // кнопка сохранить  
     ifCanSave(){
-      if(this.$route.name == 'new_object' && !this.object_id) return false;
+      if(this.$route.name == 'new_amo') return true;
+      if(this.$route.name == 'new_object' || !this.object_id) return false;
       return true;
     },
     btnActive() {
@@ -125,5 +127,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.master-footer{
+  z-index: 10;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="settings-right settings-tarif">
     <h3>{{titles['step'+ step]}}</h3>
-    <div class="row">
+    <div class="row" v-if="!$store.state.isMobile">
       <div class="col-lg-9">
         <div class="wrap-tarif-table" v-if="step == 1">
           <div class="ramka" :style="ramka"></div>
@@ -93,7 +93,8 @@
             >
               <div class="title t">{{item.num}} мес.</div>
               <div class="cr"></div>
-              <div class="sale t" v-if="item.sale">скидка
+              <div class="sale t" v-if="item.sale">
+                скидка
                 <br>
                 {{item.sale}}%
               </div>
@@ -144,6 +145,96 @@
         </div>
       </div>
     </div>
+
+    <div v-else>
+      <div v-if="step == 1" class="mob-step1">
+        <div class="currency-list">
+          <div class="item" :class="{'active': currency == 'UAH'}" @click="currency ='UAH'">UAH</div>
+          <div class="item" :class="{'active': currency == 'USD'}" @click="currency ='USD'">USD</div>
+          <div class="item" :class="{'active': currency == 'RUB'}" @click="currency ='RUB'">RUB</div>
+        </div>
+
+        <div class="tarif-tabs">
+          <div
+            class="item"
+            :class="{'active': tarif == 'start'}"
+            @click="setTarif('start', 1)"
+          >START</div>
+          <div
+            class="item"
+            :class="{'active': tarif == 'standart'}"
+            @click="setTarif('standart', 1)"
+          >STANDART</div>
+          <div
+            class="item"
+            :class="{'active': tarif == 'unlim'}"
+            @click="setTarif('unlim', 1)"
+          >UNLIM</div>
+        </div>
+
+        <div class="wrap-tarif-table" v-if="step == 1">
+          <table class="table tarif-table">
+            <tbody>
+              <tr v-for="(item, i) in data" :key="i">
+                <td>{{item.title}}</td>
+
+                <td v-if="item[tarif] == 1">
+                  <div class="gl"></div>
+                </td>
+                <td v-else>{{item[tarif]}}</td>
+              </tr>
+              <tr class="price-tr">
+                <td>
+                  Стоимость
+                  <span class="inf" title="Стоимость указана за месяц при оплате на год"></span>
+                </td>
+                <td>
+                  <b>от {{prices[tarif]}} {{currency}}</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-line btn-md waves-effect" @click="step = 2">ВЫБРАТЬ</button>
+        </div>
+      </div>
+
+      <div v-if="step == 2" class="mob-step2">
+        <div class="tf-mob-head">
+          <div class="name">{{tarif}}</div>
+          <a href="#" @click.prevent="step = 1">Изменить тариф</a>
+        </div>
+        <div class="mob-period-list">
+          <div class="title1">Выберите период использования</div>
+          <div
+            class="item"
+            :class="{'active': i == period}"
+            v-for="(item, i) in periodList"
+            :key="i"
+            @click="period = i"
+          >
+            <div class="title t">{{item.num}} мес.</div>
+            <div class="sale t" v-if="item.sale">(скидка {{item.sale}}%)</div>
+          </div>
+        </div>
+
+        <div class="mob-tprice">
+          <div class="t">К оплате:</div>
+          <div class="v">
+            <div v-if="total.price" class="all-price">
+              <b>{{Number_format(total.price)}} {{currency}}</b>
+            </div>
+            <b class="total-price">{{Number_format(total.total)}} {{currency}}</b>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button class="btn btn-line btn-md waves-effect">ОПЛАТИТЬ</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -158,7 +249,7 @@ export default {
       currency: "USD",
       step: 1,
       tarif: "start",
-      period: 1,
+      period: 6,
       showTotalInfo: false,
       tarifNames: ["start", "standart", "unlim"],
       periodList: {
@@ -295,6 +386,9 @@ export default {
   },
 
   mounted() {
+    if (this.$route.query.step) {
+      this.step = this.$route.query.step;
+    }
     $(".inf").tooltip({
       delay: 0.5
     });
@@ -315,6 +409,9 @@ export default {
     }
   },
   computed: {
+    notSale() {
+      let oneM = this.price[this.currency][this.tarif];
+    },
     tariffs() {
       return this.$store.state.tariffs;
     },
@@ -323,9 +420,9 @@ export default {
       let pr = {};
       for (let tname of this.tarifNames) {
         pr[tname] = this.Number_format(
-          this.tariffs[tname + this.period][
+          this.tariffs[tname + '12'][
             "price_" + this.currency.toLowerCase()
-          ]
+          ] / 12
         );
       }
       return pr;
@@ -342,6 +439,15 @@ export default {
         "price_" + this.currency.toLowerCase()
       ];
       let allprice = 0;
+      if (this.period > 1) {
+        allprice =
+          this.tariffs[this.tarif + "1"][
+            "price_" + this.currency.toLowerCase()
+          ] * this.period;
+      }
+
+    //  console.log(allprice, this.period);
+
       return {
         price: allprice,
         total: total
@@ -350,15 +456,18 @@ export default {
   },
   methods: {
     setTarif(t, e) {
+      this.tarif = t;
+      //  if (e == 1) this.step = 2;
+      if (!$("td.active").length) return;
       let el = e.target;
       if (el.nodeName != "TD") {
         el = el.offsetParent;
       }
       this.ramka.width = el.clientWidth + "px";
       this.ramka.left = el.offsetLeft + "px";
-      this.tarif = t;
     },
     setRamka() {
+      if (!$("td.active").length) return;
       let el = $("td.active")[0];
       this.ramka.width = el.clientWidth + "px";
       this.ramka.left = el.offsetLeft + "px";
@@ -663,6 +772,108 @@ body .settings-tarif {
 
     &.active {
       background: #e5f2f9;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .currency-list {
+    justify-content: center;
+    margin-bottom: 30px;
+    .item {
+      transition: none;
+    }
+  }
+  .tarif-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    .item {
+      width: 33.3%;
+      padding: 14px;
+      text-align: center;
+      background: #00beae;
+      color: #fff;
+      margin: 1px;
+      font-weight: bold;
+      // transition: all 0.3s ease;
+      &:first-child {
+        border-radius: 5px 0 0 5px;
+      }
+      &:last-child {
+        border-radius: 0 5px 5px 0;
+      }
+      &.active {
+        background: #ff6171;
+      }
+    }
+  }
+
+  .tf-mob-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    .name {
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    a {
+      text-decoration: underline;
+    }
+  }
+
+  .mob-period-list {
+    margin-bottom: 30px;
+    .title1 {
+      font-weight: bold;
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    .item {
+      margin-bottom: 10px;
+      border: 2px solid #ced9e3;
+      border-radius: 4px;
+      display: flex;
+      padding: 10px 15px;
+      position: relative;
+      &:before {
+        content: "";
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50px;
+        border: 2px solid #ced9e3;
+        transform: translate(0, -50%);
+      }
+      &.active {
+        border-color: #40c0a9;
+        &:before {
+          border-color: #40c0a9;
+          background: #40c0a9;
+        }
+      }
+    }
+    .title {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  }
+
+  .mob-step1,
+  .mob-step2 {
+    // margin-bottom: 50px;
+  }
+
+  .mob-tprice {
+    display: flex;
+    margin-bottom: 30px;
+    justify-content: center;
+    align-items: flex-end;
+    .t {
+      margin-right: 10px;
     }
   }
 }

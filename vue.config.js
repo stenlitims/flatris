@@ -5,5 +5,8 @@ module.exports = {
                 'vue$': 'vue/dist/vue.esm.js'
             }
         }
-    }
+    },
+    // css: {
+    //     modules: true
+    // }
 }

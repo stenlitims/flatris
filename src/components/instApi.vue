@@ -6,6 +6,9 @@
       </div>
     </div>
 
+
+    <toolNav v-if="$store.state.isMobile"></toolNav>
+
     <div class="main-container">
       <div class="card-box">
         <h5 class="text-muted text-uppercase m-t-0 m-b-20">

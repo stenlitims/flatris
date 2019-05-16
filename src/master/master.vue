@@ -72,7 +72,6 @@ import mirKv3 from "@/master/forms/mirkv/mir3";
 import webCh1 from "@/master/forms/webchess/webch1";
 import webCh2 from "@/master/forms/webchess/webch2";
 import webCh3 from "@/master/forms/webchess/webch3";
-import webCh4 from "@/master/forms/webchess/webch4";
 import webCh5 from "@/master/forms/webchess/webch5";
 import webCh6 from "@/master/forms/webchess/webch6";
 
@@ -125,7 +124,6 @@ export default {
     webCh1,
     webCh2,
     webCh3,
-    webCh4,
     webCh5,
     webCh6,
     agent1,
@@ -133,6 +131,9 @@ export default {
   },
 
   created() {
+    if (!this.$store.state.amo) {
+      this.$store.commit("getAmo");
+    }
     this.setMaster();
     this.setComp();
     this.getMaster(true);
@@ -454,13 +455,93 @@ export default {
   .btn-cancel {
     background: #ff7a59;
   }
-  h4 {
+  h4,
+  h5 {
     font-size: 20px;
     line-height: 1.4;
     margin-top: 0;
     margin-bottom: 30px;
   }
+  h5 {
+    font-size: 17px;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
 }
+
+.page-master {
+  .btn-outline-primary {
+    border-radius: 8px;
+    border: 2px solid #cbd6e2;
+  }
+  .f-item{
+    margin-bottom: 50px;
+  }
+}
+
+.r-content-master{
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 15px;
+  padding-bottom: 26vh;
+}
+
+
+.btns-inner-master{
+  margin-top: 25px;
+    > * {
+    margin: 0 10px;
+  }
+}
+
+.master-sidebar {
+  border-radius: 8px;
+  border: 1px solid #cbd6e2;
+  overflow: hidden;
+  .item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #cbd6e2;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    cursor: pointer;
+    &:last-child {
+      border: none;
+    }
+    &.active {
+      background: #f5f8fa;
+      .title {
+        .num {
+          background: #fff;
+        }
+      }
+    }
+  }
+  .title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    .num {
+      width: 32px;
+      height: 32px;
+      margin-right: 10px;
+      line-height: 32px;
+      transition: all 0.3s ease;
+      background: #ecf0f4;
+      border-radius: 50%;
+      text-align: center;
+    }
+  }
+}
+.master-inner{
+.master-sidebar-title{
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+}
+
 
 @media (min-width: 800px) {
   .page-master {

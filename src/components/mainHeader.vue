@@ -7,46 +7,64 @@
             <img src="https://flatris.com.ua/assets/images/logo/logo_full_w.svg" alt>
           </router-link>
         </div>
-        <div class="main-nav">
-          <ul>
-            <li>
-              <router-link to="/" class="waves-effect">Рабочий стол</router-link>
-            </li>
-            <li class="parent">
-              <router-link to="/objects/my" class="waves-effect">Объекты</router-link>
-              <ul>
-                <li>
-                  <router-link to="/objects/my">Мои объекты</router-link>
-                </li>
-                <li>
-                  <router-link to="/objects/other">Доступные мне объекты</router-link>
-                </li>
-                <li class="line">
-                  <router-link :to="{ name: 'new_object', params: { id: 1 }}">Добавить новый объект</router-link>
-                </li>
-              </ul>
-            </li>
-            <li class="parent">
-              <a href="#">Инструменты</a>
-              <ul class="w2">
-                <li>
-                  <router-link to="/inst/webchess">Интерактивный каталог для сайта</router-link>
-                </li>
-                <li>
-                  <router-link to="/inst/crm">Шахматка для отдела продаж</router-link>
-                </li>
-                <li>
-                  <router-link to="/inst/portals">Размещение на порталах недвижимости</router-link>
-                </li>
-                <li>
-                  <router-link to="/inst/agent">Подключение агентств недвижимости</router-link>
-                </li>
-                <li class="line">
-                  <router-link to="/inst/api">Интеграция по API</router-link>
-                </li>
-              </ul>
-            </li>
-          </ul>
+
+        <div class="mob-nav" :class="{'active': mobNav}">
+          <div class="close-modal-nav hidden-lg" @click="mobNav = false"></div>
+          <div class="main-nav">
+            <ul>
+              <li>
+                <router-link to="/" class="waves-effect">Рабочий стол</router-link>
+              </li>
+              <li class="parent" @click="slideDW">
+                <router-link
+                  to="/objects/my"
+                  v-if="!$store.state.isMobile"
+                  class="waves-effect"
+                >Объекты</router-link>
+                <a v-else class="waves-effect">Объекты</a>
+                <ul>
+                  <li>
+                    <router-link to="/objects/my">Мои объекты</router-link>
+                  </li>
+                  <li>
+                    <router-link to="/objects/other">Доступные мне объекты</router-link>
+                  </li>
+                  <li class="line">
+                    <router-link
+                      :to="{ name: 'new_object', params: { id: 1 }}"
+                    >Добавить новый объект</router-link>
+                  </li>
+                </ul>
+              </li>
+              <li :class="{'parent': !$store.state.isMobile}">
+                <a href="#" v-if="!$store.state.isMobile">Инструменты</a>
+                <router-link v-else to="/inst/mob">Инструменты</router-link>
+                <ul class="w2" v-if="!$store.state.isMobile">
+                  <li>
+                    <router-link to="/inst/webchess">Интерактивный каталог для сайта</router-link>
+                  </li>
+                  <li>
+                    <router-link to="/inst/crm">Шахматка для отдела продаж</router-link>
+                  </li>
+                  <li>
+                    <router-link to="/inst/portals">Размещение на порталах недвижимости</router-link>
+                  </li>
+                  <li>
+                    <router-link to="/inst/agent">Подключение агентств недвижимости</router-link>
+                  </li>
+                  <li class="line">
+                    <router-link to="/inst/api">Интеграция по API</router-link>
+                  </li>
+                </ul>
+              </li>
+              <li v-if="$store.state.isMobile">
+                <router-link to="/settings" class="waves-effect">Настройки</router-link>
+              </li>
+              <li v-if="$store.state.isMobile">
+                <router-link to="/settings/user" class="waves-effect">Профиль</router-link>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -57,13 +75,18 @@
               <use xlink:href="#icon-bubble"></use>
             </svg>
           </a>
-          <a href="#">
+
+          <!-- <a href="#">
             <svg>
               <use xlink:href="#icon-bell"></use>
             </svg>
-          </a>
+          </a>-->
 
-          <router-link :to="{ name: 'settings', params: { id: 'user' }}" title="Настройки">
+          <router-link
+            v-if="!$store.state.isMobile"
+            :to="{ name: 'settings', params: { id: 'user' }}"
+            title="Настройки"
+          >
             <svg>
               <use xlink:href="#icon-gear"></use>
             </svg>
@@ -77,7 +100,12 @@
               <li class="parent" :class="{'active': showMenu}">
                 <a href="#" @click.prevent="showMenu = !showMenu">
                   <div class="avatar">
-                    <img :src="$store.state.mainurl +'/assets/panel/img/user.svg'" alt>
+                    <img
+                      :src="$store.state.mainurl +'/'+$store.state.user.photo"
+                      v-if="$store.state.user.photo"
+                      alt
+                    >
+                    <img :src="$store.state.mainurl +'/assets/panel/img/user2.svg'" v-else alt>
                   </div>
                   {{name}}
                 </a>
@@ -87,7 +115,12 @@
           <div class="user-nav dropdown-menu dropdown-menu-right" :class="{'show': showMenu}">
             <div class="dropdown-item-text user-header">
               <div class="avatar">
-                <img :src="$store.state.mainurl +'/assets/panel/img/user.svg'" alt>
+                <img
+                  :src="$store.state.mainurl +'/'+$store.state.user.photo"
+                  v-if="$store.state.user.photo"
+                  alt
+                >
+                <img :src="$store.state.mainurl +'/assets/panel/img/user2.svg'" v-else alt>
               </div>
               <div class="inf">
                 <div class="name">{{$store.state.user.fullname}}</div>
@@ -119,14 +152,28 @@
               title="Настройки"
             >Заказы и оплаты</router-link>
 
-            <a class="dropdown-item" target="_blank" href="https://flatris.com.ua/wiki/poshagovaya-nastrojka/sozdanie-obekta">База знаний</a>
+            <a
+              class="dropdown-item"
+              target="_blank"
+              href="https://flatris.com.ua/wiki/poshagovaya-nastrojka/sozdanie-obekta"
+            >База знаний</a>
             <a class="dropdown-item" @click.prevent="mesPop" href="#">Служба поддержки</a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item link" href="https://test.flatris.com.ua/login?service=logout">Выход с аккаунта</a>
+            <a
+              class="dropdown-item link"
+              href="https://test.flatris.com.ua/login?service=logout"
+            >Выход с аккаунта</a>
           </div>
+        </div>
+
+        <div class="burger" @click="mobNav = true">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </div>
     </div>
+    <div class="mask-site" @click="mobNav = false" :class="{'active': mobNav}"></div>
   </div>
 </template>
 
@@ -136,9 +183,19 @@ export default {
 
   data() {
     return {
-      showMenu: false
+      showMenu: false,
+      mobNav: false
     };
   },
+
+  watch: {
+    $route() {
+      this.mobNav = false;
+
+      this.setPosMobNav();
+    }
+  },
+
   computed: {
     name() {
       if (this.$store.state.user.fax) {
@@ -160,8 +217,26 @@ export default {
         this.showMenu = false;
       }
     });
+    this.setPosMobNav();
   },
   methods: {
+    slideDW(e) {
+      //  console.log(e);
+      let parent = $(e.target)
+        .parent()
+        .find("ul");
+      parent.slideToggle(0);
+    },
+    setPosMobNav() {
+      setTimeout(() => {
+        if ($(".line-nav").length && $(".line-nav .router-link-active")[0]) {
+          let l =
+            $(".line-nav .router-link-active")[0].offsetLeft -
+            $(".line-nav .router-link-active").outerWidth() / 2;
+          $(".line-nav").scrollLeft(l);
+        }
+      }, 20);
+    },
     mesPop() {
       swal({
         title: "Выберете удобный для вас канал связи",
@@ -192,6 +267,46 @@ export default {
 </script>
 
 <style lang="scss">
+.user-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  .avatar {
+    margin-right: 15px;
+    img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 2px solid #cbd6e2;
+    }
+  }
+
+  .name {
+    font-size: 24px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    a {
+      margin-left: 10px;
+      display: block;
+      height: 26px;
+      margin-top: -8px;
+    }
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: #2e3f50;
+    }
+  }
+
+  .type {
+    padding: 6px 12px;
+    border: 2px solid #cbd6e2;
+    display: inline-block;
+    border-radius: 5px;
+    background: #fff;
+  }
+}
 .user-nav {
   min-width: 300px;
   font-size: 13px;
@@ -396,6 +511,8 @@ export default {
     img {
       width: 36px;
       height: 36px;
+      border-radius: 50%;
+      border: 1px solid #40c0a95b;
     }
   }
 }
@@ -443,6 +560,45 @@ export default {
     .container {
       padding-left: 25px;
       padding-right: 25px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header .logo {
+    max-width: 34px;
+    overflow: hidden;
+  }
+  .mob-nav .main-nav > ul > li > a {
+    background: #3f5a6c !important;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+  .main-header .main-nav > ul > li ul a.router-link-active {
+    background: #1d3751;
+  }
+  .mob-nav .main-nav > ul > li > ul {
+    padding: 0;
+  }
+  // .main-header .main-nav > ul > li ul .line {
+  //   //   display: none;
+  //   margin: 0;
+  //   padding: 0;
+  //   border: none;
+  // }
+
+  .mob-nav .parent {
+    ul {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .main-header {
+    .v-line,
+    .btn-group {
+      display: none;
     }
   }
 }

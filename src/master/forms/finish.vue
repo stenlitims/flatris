@@ -26,7 +26,7 @@ export default {
   created() {},
   updated() {},
   mounted() {
-    console.log(this.$route);
+   // console.log(this.$route);
   },
   methods: {
     finish() {
@@ -34,6 +34,24 @@ export default {
       data["master"] = this.namep;
       //    data["steps"] = this.steps;
       //   data["step"] = this.step;
+
+      if (this.$route.name == "new_webchess") {
+        $.post(
+          this.$store.state.apiurl,
+          {
+            action: "getGproject",
+            update: 1,
+            id: this.$route.params.oid,
+            active_webchess: 1
+          },
+          data => {
+            console.log(data);
+            this.$router.push({ name: "instWebchess" });
+          },
+          "json"
+        );
+        return;
+      }
 
       $.post(
         this.$store.state.apiurl,
@@ -58,7 +76,7 @@ export default {
         "json"
       );
 
-      if (this.object_id) {
+      if (this.$route.name == "new_object") {
         $.post(
           this.$store.state.apiurl,
           {

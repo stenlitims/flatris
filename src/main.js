@@ -7,28 +7,42 @@ import App from './App'
 import cusSwitch from "@/components/global/switch"
 import noObjedcts from "@/components/chanks/noObjedcts"
 import permissionDenied from "@/components/chanks/permissionDenied"
+import toolNav from "@/components/chanks/toolNav"
 import mixGlobal from "@/mixin/global"
 
 import router from './router'
 import SlideUpDown from 'vue-slide-up-down'
+import myUpload from 'vue-image-crop-upload';
 
 import store from './store/index'
 import VueLodash from 'vue-lodash'
+import VueClipboard from 'vue-clipboard2'
 
-const options = { name: 'lodash' } // customize the way you want to call it
+
+
+const options = {
+  name: 'lodash'
+} // customize the way you want to call it
 
 Vue.use(VueLodash, options) // options is optional
 
 Vue.use(VueBus)
+
+Vue.use(VueClipboard)
 
 
 Vue.config.productionTip = false
 Vue.component('cusSwitch', cusSwitch)
 Vue.component('noObjedcts', noObjedcts)
 Vue.component('permissionDenied', permissionDenied)
+Vue.component('toolNav', toolNav)
 Vue.component('slide-up-down', SlideUpDown)
+Vue.component('myUpload', myUpload)
 
 Vue.mixin(mixGlobal);
+
+
+window._ = Vue.lodash;
 
 new Vue({
   el: '#app',
@@ -43,12 +57,27 @@ new Vue({
   },
   computed: {
     isMobile() {
-      if($(window).width() < 991){
+      if ($(window).width() < 991) {
         return true;
       }
       return false;
     }
   },
+
+  mounted() {
+    if (window.innerWidth < 991) {
+      this.$store.commit("setIsMobile", true);
+    }
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth < 991) {
+        this.$store.commit("setIsMobile", true);
+      } else {
+        this.$store.commit("setIsMobile", false);
+      }
+    });
+  },
+
   template: '<App/>'
 });
 
@@ -64,6 +93,3 @@ window.addEventListener('resize', () => {
   let vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 });
-
-
-

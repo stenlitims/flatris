@@ -1,6 +1,13 @@
 <template>
   <div>
-    <div class="heading">
+    <router-link
+      :to="{ name: 'new_object', params: { id: 1 }}"
+      class="circle-btn"
+      v-if="$store.state.isMobile"
+    >
+      <div class="plus"></div>
+    </router-link>
+    <div class="heading" v-if="!$store.state.isMobile">
       <div class="main-container container">
         <div class="l">Объекты</div>
 
@@ -30,8 +37,27 @@
         </div>
       </div>
     </div>
-    <div class="main-container container">
-      <div class="objects-list main-list">
+    <div class="mob-heading2" v-else>
+      <div class="container">
+        <div class="title">Объекты</div>
+      </div>
+      <div class="line-nav">
+        <div class="inner">
+          <button
+            @click="chObj('my')"
+            :class="{'active':objtype != 'other'}"
+            class="item"
+          >Мои объекты</button>
+          <button
+            @click="chObj('other')"
+            :class="{'active':objtype != 'my'}"
+            class="item"
+          >Доступные мне</button>
+        </div>
+      </div>
+    </div>
+    <div class="main-container container" v-if="!$store.state.isMobile">
+      <div class="objects-list main-list" v-if="objects">
         <div class="row">
           <div class="col-md-6 col-lg-4" v-if="objtype == 'my'">
             <div class="item item-add">
@@ -95,7 +121,7 @@
                     <svg>
                       <use xlink:href="#looking-apartment"></use>
                     </svg>
-                    
+
                     <span>Открыть шахматку</span>
                   </a>
                   <a href="#" @click.prevent="openGtab(item)" class="col">
@@ -125,6 +151,59 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <div v-else>
+        <h2 class="text-center">Нет объектов</h2>
+      </div>
+    </div>
+
+    <div v-else>
+      <div class="container">
+        <div class="list-mod-objects" v-if="objects">
+          <div class="item" v-for="(item, i) in objects" :key="i">
+            <a :href="$store.state.mainurl+'/api/chess/?cid='+item.cid" target="_blank" class="img">
+              <img :src="item.logo" v-if="item.logo" alt>
+              <img :src="item.img" v-else-if="item.img" alt>
+              <img :src="$store.state.mainurl+'/assets/panel/img/object.svg'" v-else alt>
+            </a>
+            <a
+              :href="$store.state.mainurl+'/api/chess/?cid='+item.cid"
+              target="_blank"
+              class="info"
+            >
+              <div class="title">{{item.name}}</div>
+              <div class="adr">{{item.address}}</div>
+            </a>
+            <div class="bot-btn">
+              <span></span>
+              <span></span>
+              <span></span>
+              <div class="a-nav">
+                <a
+                  :href="$store.state.mainurl+'/api/chess/?cid='+item.cid"
+                  target="_blank"
+                  class="link"
+                >Открыть шахматку</a>
+                <a href="#" @click.prevent="openGtab(item)" class="link">Открыть таблицу</a>
+                <router-link
+                  :to="{ name: 'object', params: { id: 1, oid:item.id }}"
+                  class="link"
+                >Редактировать объект</router-link>
+                <a
+                  href="#"
+                  v-if="objtype == 'my'"
+                  @click.prevent="deleteObject(item.id)"
+                  class="link"
+                >Удалить объект</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-else>
+          <br>
+          <br>
+          <h4 class="text-center">Нет объектов</h4>
         </div>
       </div>
     </div>

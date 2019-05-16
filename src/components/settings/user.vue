@@ -2,7 +2,12 @@
   <div class="user-block settings-right">
     <div class="user-header">
       <div class="avatar">
-        <img :src="$store.state.mainurl +'/assets/panel/img/user.svg'" alt>
+        <img
+          :src="$store.state.mainurl +'/'+$store.state.user.photo"
+          v-if="$store.state.user.photo"
+          alt
+        >
+        <img :src="$store.state.mainurl +'/assets/panel/img/user2.svg'" v-else alt>
       </div>
       <div class="inf">
         <div class="name">
@@ -54,13 +59,25 @@
       <div class="col-lg-6">
         <div class="form-group">
           <label>Компания</label>
-          <input type="text" class="form-control" @keyup="setChanges('fax')" :readonly=" userType != 1 " v-model="out.fax">
+          <input
+            type="text"
+            class="form-control"
+            @keyup="setChanges('fax')"
+            :readonly=" userType != 1 "
+            v-model="out.fax"
+          >
         </div>
       </div>
       <div class="col-lg-6">
         <div class="form-group">
           <label>Email</label>
-          <input type="text" class="form-control" @keyup="setChanges('email')" readonly v-model="out.email">
+          <input
+            type="text"
+            class="form-control"
+            @keyup="setChanges('email')"
+            readonly
+            v-model="out.email"
+          >
         </div>
       </div>
       <div class="col-lg-6">
@@ -148,23 +165,21 @@ export default {
         }
       });
     });
-
   },
   computed: {
     out() {
       if (this.$store.state.changes.count.length == 0) {
+        //  console.log(this.$store.state.user);
         this.form = Object.assign({}, this.$store.state.user);
         this.original = Object.assign({}, this.$store.state.user);
       }
       return this.form;
-    },
+    }
     // typeUserName(){
 
     //   return
     // this.$store.state.user.typeUsers
 
-
-      
     // }
   },
   methods: {
@@ -253,6 +268,7 @@ export default {
     },
     editName() {},
     send(data) {
+      //    if(this.send) return;
       // console.log(this.data);
       $.post(
         this.$store.state.apiurl,
@@ -270,7 +286,8 @@ export default {
         data => {
           if (data) {
             // console.log(data);
-            this.$store.state.user = this.form;
+            this.$store.commit("loadUser", "test");
+            //  this.$store.state.user = this.form;
             this.saveOk();
           }
         },
@@ -281,57 +298,20 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.user-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 30px;
-  .avatar {
-    margin-right: 15px;
-    img {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      border: 2px solid #cbd6e2;
-    }
+<style lang="scss" scoped>
+@media (max-width: 576px) {
+  .user-header .avatar img {
+    width: 70px;
+    height: 70px;
   }
-
-  .name {
-    font-size: 24px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    a {
-      margin-left: 10px;
-      display: block;
-      height: 26px;
-      margin-top: -8px;
-    }
-    svg {
-      width: 18px;
-      height: 18px;
-      fill: #2e3f50;
-    }
+  .user-header .name {
+    font-size: 22px;
   }
-
-  .type {
-    padding: 6px 12px;
-    border: 2px solid #cbd6e2;
-    display: inline-block;
-    border-radius: 5px;
-    background: #fff;
+  .user-header .type {
+    font-size: 12px;
   }
-}
-.pass-control {
-  margin-top: 20px;
-}
-
-.eye {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  img {
-    width: 100%;
+  .settings-right {
+    overflow: hidden;
   }
 }
 </style>

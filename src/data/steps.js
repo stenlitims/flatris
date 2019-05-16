@@ -76,32 +76,26 @@ let steps = {
     name: "Создание веб-шахматки для сайта",
     finish: `Поздравляем! Вы успешно создали веб-шахматку для вашего сайта.`,
     steps: [
+      // {
+      //   name: "Выбор дизайна",
+      //   comp: "webCh1",
+      //   complete: false,
+      //   btnActive: false
+      // },
       {
-        name: "Выбор языка",
-        comp: "webCh1",
-        complete: false,
-        btnActive: false
-      },
-      {
-        name: "Настройка полей",
+        name: "Настройки",
         comp: "webCh2",
         complete: false,
         btnActive: false
       },
       {
-        name: "Выбор объектов",
+        name: "Виджет для сайта",
         comp: "webCh3",
         complete: false,
         btnActive: false
       },
       {
-        name: "Подмена статусов",
-        comp: "webCh4",
-        complete: false,
-        btnActive: false
-      },
-      {
-        name: "Интерактивный фасад",
+        name: "Данные по объекту",
         comp: "objectDetail",
         complete: false,
         btnActive: false

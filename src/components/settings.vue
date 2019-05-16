@@ -3,19 +3,30 @@
     <div class="heading">
       <div class="main-container container">Настройки</div>
     </div>
+    <div class="mob-heading2" v-if="$store.state.isMobile">
+      <div class="container">
+        <div class="title">Настройки</div>
+      </div>
+      <div class="line-nav">
+        <div class="inner">
+          <router-link class="item it1" :to="{ name: 'settings', params: { id: 'user' }}">Аккаунт</router-link>
+          <!-- <router-link class="item it2" :to="{ name: 'settings', params: { id: 'notification' }}">Уведомления</router-link> -->
+          <router-link class="item it3" :to="{ name: 'settings', params: { id: 'users' }}">Пользователи</router-link>
+          <router-link class="item it4" :to="{ name: 'settings', params: { id: 'tarif' }}">Тарифы</router-link>
+          <router-link class="item it5" :to="{ name: 'settings', params: { id: 'orders' }}">Заказы и оплаты</router-link>
+          
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="row">
-        <div class="col-md-3 col-lg-2 wrap-left-nav">
+        <div class="col-md-3 col-lg-2 wrap-left-nav" v-if="!$store.state.isMobile">
           <div class="left-nav">
+            
             <ul>
-              <li @click="nav.inst = false">
+              <li>
                 <router-link :to="{ name: 'settings', params: { id: 'user' }}">Аккаунт</router-link>
-              </li>
-              <li @click="nav.inst = false">
-                <router-link :to="{ name: 'settings', params: { id: 'notification' }}">Уведомления</router-link>
-              </li>
-              <li @click="nav.inst = false">
-                <router-link :to="{ name: 'settings', params: { id: 'objects' }}">Объекты</router-link>
               </li>
               <li class="parent" :class="{'open': nav.inst}">
                 <a href="#" @click.prevent="nav.inst = !nav.inst">Инструменты</a>
@@ -50,9 +61,9 @@
               <li @click="nav.inst = false">
                 <router-link :to="{ name: 'settings', params: { id: 'users' }}">Пользователи</router-link>
               </li>
-              <li @click="nav.inst = false">
+              <!-- <li @click="nav.inst = false">
                 <router-link :to="{ name: 'settings', params: { id: 'goals' }}">Цели</router-link>
-              </li>
+              </li> -->
               <li @click="nav.inst = false" v-if="userType < 3">
                 <router-link :to="{ name: 'settings', params: { id: 'tarif' }}">Тарифы</router-link>
               </li>
@@ -72,16 +83,14 @@
 
     <savePanel v-if="$store.state.changes.count.length"></savePanel>
     <savePanel
-      v-if="userIds.length"
+      v-if="userIds.length && !$store.state.isMobile"
       @userIds="userIds = []"
       prop="users"
       :ids="userIds"
       :title="'Вы выбрали '+userIds.length+' '+Declension(userIds.length, ['пользователя', 'пользователя', 'пользователей'] )+ '.'"
     ></savePanel>
     <transition name="sright">
-      <modalRight
-       @userIds="userIds = $event"
-       v-if="$store.state.rmodal.type" :userIds="userIds"></modalRight>
+      <modalRight @userIds="userIds = $event" v-if="$store.state.rmodal.type" :userIds="userIds"></modalRight>
     </transition>
   </div>
 </template>
@@ -143,10 +152,9 @@ export default {
 
   beforeDestroy() {},
 
-  watch:{
+  watch: {
     // userIds(){
     //   if(!this.userIds.length){
-
     //   }
     // }
   },
@@ -280,6 +288,15 @@ export default {
   }
   h3 {
     margin-bottom: 0;
+  }
+}
+
+@media (max-width: 991px) {
+  .settings-right h3{
+    display: none;
+  }
+  .settings-content{
+    padding-bottom: 20px;
   }
 }
 </style>

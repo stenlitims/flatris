@@ -3,19 +3,27 @@
     <h3 class="text-center">Веб-шахматка для сайта готова!</h3>
     <div class="text-center">
       <a
-        :href="$root.mainurl+'/api/chess/?cid='+cid"
+        :href="url"
         target="_blank"
         class="btn btn-md btn-cancel waves-effect"
       >Предварительный просмотр</a>
     </div>
 
     <div class="wrap-code">
-      <p>Чтобы разместить веш-шахматку на вашем сайте - скопируйте и вставьте код на вашем сайте перед закрывающим тегом body</p>
-      <textarea id="code" name="code" v-model="code"></textarea>
+      <div class="row-b-code">
+        <div class="btns">
+          <div class="btn" @click="lang='uk'" :class="{'active': this.lang == 'uk'}">UA</div>
+          <div class="btn" @click="lang='ru'" :class="{'active': this.lang == 'ru'}">RU</div>
+        </div>
+        <p>Чтобы разместить веш-шахматку на вашем сайте - скопируйте и вставьте код на вашем сайте перед закрывающим тегом body</p>
+      </div>
+
+      <!-- <textarea id="code" name="code" v-model="code"></textarea> -->
+      <codemirror v-model="code" ref="myEditor" :options="editorOption"></codemirror>
     </div>
 
     <div class="btns text-center">
-      <button class="btn btn-md waves-effect" @click="copy">Скопировать код</button>
+      <button class="btn btn-md waves-effect" v-clipboard:copy="code">Скопировать код</button>
       <button class="btn btn-md waves-effect" @click="sendToEmail">Отправить на email</button>
     </div>
   </div>
@@ -23,10 +31,14 @@
 
 <script>
 import masterMixin from "@/mixin/masterMixin";
+import { codemirror } from "vue-codemirror-lite";
 
 export default {
   name: "webCh6",
   mixins: [masterMixin],
+  components: {
+    codemirror
+  },
   data() {
     return {
       errors: [],
@@ -35,20 +47,43 @@ export default {
       form: {},
       cid: "",
       upd: false,
-      required: {}
+      required: {},
+      lang: "ru",
+      editorOption: {
+        mode: { name: "xml", alignCDATA: true },
+        lineNumbers: true,
+        theme: "ambiance"
+      }
     };
   },
   created() {
-    if (!window.loadsScriptOb) {
-      this.loadsScript();
-    }
+    // if (!window.loadsScriptOb) {
+    //   this.loadsScript();
+    // }
+    this.getCid();
   },
   updated() {},
   mounted() {
     this.$emit("btnActive", !this.error.length);
-    if (window.loadsScriptOb) this.getCid();
   },
   computed: {
+    editor() {
+      return this.$refs.myEditor.editor;
+    },
+    url() {
+      let url =
+        this.$root.mainurl +
+        "/public/chess/?cid=" +
+        this.cid +
+        "&ut=web&hl=" +
+        this.lang;
+      if (this.$store.state.webchess) {
+        if (!this.$store.state.webchess.color)  return url;
+        let main = this.$store.state.webchess.color.main;
+        url = url + "&color=" + main.replace("#", "");
+      }
+      return url;
+    },
     code() {
       let code = `
 <script type="text/javascript">
@@ -56,9 +91,9 @@ export default {
         p=d.getElementsByTagName(s)[0],e=d.createElement(s),e.async=1,e.src=u,p.parentNode.insertBefore(e, p);
     })(document, 'script', '${this.$root.mainurl}/public/web.js?cid=${
         this.cid
-      }');
+      }&hl=${this.lang}');
 &lt;/script>
-      `;
+`;
 
       code = code.replace("&lt;", "<");
       return code;
@@ -75,42 +110,9 @@ export default {
         data => {
           if (data) {
             this.cid = data.cid;
-            this.addCode();
           }
         },
         "json"
-      );
-    },
-    loadsScript() {
-      $("head").append(
-        $('<link rel="stylesheet" type="text/css" />').attr(
-          "href",
-          this.$root.mainurl + "/assets/plugins/codemirror/css/codemirror.css"
-        )
-      );
-      $("head").append(
-        $('<link rel="stylesheet" type="text/css" />').attr(
-          "href",
-          this.$root.mainurl + "/assets/plugins/codemirror/css/ambiance.css"
-        )
-      );
-      $.getScript(
-        this.$root.mainurl + "/assets/plugins/codemirror/js/codemirror.js",
-        () => {
-          $.getScript(
-            this.$root.mainurl + "/assets/plugins/codemirror/js/formatting.js",
-            () => {
-              $.getScript(
-                this.$root.mainurl + "/assets/plugins/codemirror/js/xml.js",
-                () => {
-                  this.loader = false;
-                  window.loadsScriptOb = true;
-                  this.getCid();
-                }
-              );
-            }
-          );
-        }
       );
     },
 
@@ -144,38 +146,13 @@ export default {
       })();
     },
 
-    addCode() {
-      $(".CodeMirror").remove();
-      setTimeout(() => {
-        var editor = CodeMirror.fromTextArea($("#code")[0], {
-          mode: { name: "xml", alignCDATA: true },
-          lineNumbers: true,
-          theme: "ambiance"
-        });
-      }, 15);
-
-      //  console.log(editor);
-    },
-
-    copy(id) {
-      var copyTextarea = document.querySelector("#code");
-      copyTextarea.focus();
-      copyTextarea.select();
-
-      try {
-        var successful = document.execCommand("copy");
-        var msg = successful ? "successful" : "unsuccessful";
-        //  console.log("Copying text command was " + msg);
-      } catch (err) {
-        //     console.log("Oops, unable to copy");
-      }
-    },
-
     send(e) {
-      if (e == "prev") {
-        this.$emit("footerBtn", e);
-        return true;
-      }
+      this.$emit("footerBtn", e);
+      // if (e == "prev") {
+      //   this.$emit("footerBtn", e);
+
+      //   return true;
+      // }
 
       // $.post(
       //   this.$root.apiurl,
@@ -199,6 +176,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.cm-error {
+  color: #e6e1dc;
+}
 .form {
   max-width: inherit !important;
 }
@@ -220,5 +200,25 @@ export default {
   position: absolute;
   opacity: 0;
   display: block !important;
+}
+
+.row-b-code {
+  display: flex;
+  align-items: flex-start;
+  .btns {
+    margin-right: 30px;
+  }
+  .btn {
+    margin: 0;
+    border-radius: 4px 4px 0 0;
+    width: 60px;
+    border-bottom: none;
+    background: #f5f8fa;
+    border-color: #cbd6e2;
+    color: #33475b;
+    &.active {
+      background: #cbd6e2;
+    }
+  }
 }
 </style>

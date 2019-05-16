@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="heading">
+    <div class="heading mob-heading">
       <div class="main-container container">Простое и понятное внедрение Flatris</div>
     </div>
     <div class="main-container container">
@@ -48,19 +48,26 @@
               <!-- <button
                 @click="disableBlock('sh_mp_amo')"
                 class="btn btn-outline-primary btn-md waves-effect"
-              >Пропустить</button> -->
+              >Пропустить</button>-->
               <div class="img">
                 <img :src="$root.mainurl +'/assets/panel/img/main/3.png'" alt>
               </div>
               <div class="title">3. Подключить Flatris к CRM</div>
-              <div class="btns">
-                <router-link
-                  :to="{ name: 'new_amo', params: { id: 1 }}"
-                  class="btn btn-outline-success btn-md waves-effect"
-                >Подключить</router-link>
+              <div v-if="!$amo.status">
+                <div class="btns">
+                  <router-link
+                    :to="{ name: 'new_amo', params: { id: 1 }}"
+                    class="btn btn-outline-success btn-md waves-effect"
+                  >Подключить</router-link>
+                </div>
+                <div class="info">
+                  <a href="#">Посмотреть инструкцию</a>
+                </div>
               </div>
-              <div class="info">
-                <a href="#">Посмотреть инструкцию</a>
+              <div v-else class="check">
+                <svg>
+                  <use xlink:href="#icon-check"></use>
+                </svg>
               </div>
             </div>
           </div>
@@ -69,19 +76,26 @@
               <!-- <button
                 @click="disableBlock('sh_mp_webch')"
                 class="btn btn-outline-primary btn-md waves-effect"
-              >Пропустить</button> -->
+              >Пропустить</button>-->
               <div class="img">
                 <img :src="$root.mainurl +'/assets/panel/img/main/4.png'" alt>
               </div>
               <div class="title">4. Создать интерактивный каталог по выбору квартир на сайте ЖК</div>
-              <div class="btns">
-                <router-link
-                  :to="{ name: 'webchess', params: { id: 1, oid: 246 }}"
-                  class="btn btn-outline-success btn-md waves-effect"
-                >Создать</router-link>
+              <div v-if="countObjects == 1">
+                <div class="btns">
+                  <router-link
+                    :to="{ name: 'webchess', params: { id: 1, oid: 246 }}"
+                    class="btn btn-outline-success btn-md waves-effect"
+                  >Создать</router-link>
+                </div>
+                <div class="info">
+                  <a href="#">Посмотреть инструкцию</a>
+                </div>
               </div>
-              <div class="info">
-                <a href="#">Посмотреть инструкцию</a>
+              <div v-else class="check">
+                <svg>
+                  <use xlink:href="#icon-check"></use>
+                </svg>
               </div>
             </div>
           </div>
@@ -90,7 +104,7 @@
               <!-- <button
                 @click="disableBlock('sh_mp_portal')"
                 class="btn btn-outline-primary btn-md waves-effect"
-              >Пропустить</button> -->
+              >Пропустить</button>-->
               <div class="img">
                 <img :src="$root.mainurl +'/assets/panel/img/main/5.png'" alt>
               </div>
@@ -111,7 +125,7 @@
               <!-- <button
                 @click="disableBlock('sh_mp_partner')"
                 class="btn btn-outline-primary btn-md waves-effect"
-              >Пропустить</button> -->
+              >Пропустить</button>-->
               <div class="img">
                 <img :src="$root.mainurl +'/assets/panel/img/main/6.png'" alt>
               </div>
@@ -128,7 +142,6 @@
             </div>
           </div>
 
-         
           <div class="col-md-6 col-lg-4" v-if="countObjects">
             <div class="item">
               <div class="img">
@@ -143,9 +156,6 @@
               </div>
             </div>
           </div>
-         
-
-
         </div>
       </div>
     </div>
@@ -162,6 +172,9 @@ export default {
   mounted() {},
   created() {
     window.routeParam = { name: this.$route.name, params: this.$route.params };
+    if (!this.$store.state.amo) {
+      this.$store.commit("getAmo");
+    }
   },
   computed: {
     userSettings() {
@@ -220,14 +233,14 @@ export default {
   margin-top: 40px;
 }
 
-.main-list .title{
+.main-list .title {
   min-height: 50px;
   margin-bottom: 0;
 }
 
-.main-list{
-  .btns{
-    .btn{
+.main-list {
+  .btns {
+    .btn {
       min-width: 140px;
     }
   }

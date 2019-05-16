@@ -5,7 +5,7 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="form-group">
-            <label>Адрес</label>
+            <label>Адрес *</label>
             <input
               type="text"
               class="form-control"
@@ -17,7 +17,7 @@
         </div>
         <div class="col-lg-6">
           <div class="form-group">
-            <label>Телефон</label>
+            <label>Телефон *</label>
             <input
               type="text"
               class="form-control"
@@ -29,7 +29,7 @@
         </div>
         <div class="col-lg-6">
           <div class="form-group">
-            <label>Email</label>
+            <label>Email *</label>
             <input
               type="email"
               class="form-control"

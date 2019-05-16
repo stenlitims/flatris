@@ -1,14 +1,36 @@
 <template>
-  <div class="form">
-    <h4 class="text-center">Выберите дома и секции, которые хотите отображать на сайте</h4>
-    <div class="row" v-if="data.permissions_tree">
-      <div class="col-lg-6">
-        <chObList
-          class="text-border"
-          :data="data.permissions_tree"
-          :dataId="object_id"
-          @setPr="setChanges2('pr')"
-        ></chObList>
+  <div class>
+    <h4 class="text-center">Создайте свой виджет для сайта</h4>
+    <div class="row">
+      <div class="col-lg-4 col-xl-3">
+        <h4 class="master-sidebar-title">РЕДАКТИРОВАНИЕ ВИДЖЕТА</h4>
+        <div class="master-sidebar">
+          <div href="#color" @click="linkScroll('#color')" class="item active">
+            <div class="title">
+              <div class="num">1</div>Цвет кнопки
+            </div>
+            <div class="text">Выберите цвет кнопки виджета и иконок</div>
+          </div>
+          <div href="#position" @click="linkScroll('#position')" class="item">
+            <div class="title">
+              <div class="num">2</div>Положение кнопки
+            </div>
+            <div class="text">Выберите положение кнопки "Выбрать квартиру" на вашем сайте</div>
+          </div>
+          <div href="#timeout" @click="linkScroll('#timeout')" class="item">
+            <div class="title">
+              <div class="num">3</div>Старт показа
+            </div>
+            <div class="text">Укажите когда кнопка должна появится на вашем сайте.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 col-xl-9">
+        <div class="form r-content-master c-sc" @scroll="onScroll">
+          <color></color>
+          <position></position>
+          <timeout></timeout>
+        </div>
       </div>
     </div>
   </div>
@@ -16,13 +38,16 @@
 
 <script>
 import masterMixin from "@/mixin/masterMixin";
-import chObList from "@/master/blocks/chObList";
-
+import color from "@/master/forms/webchess/el/color";
+import position from "@/master/forms/webchess/el/position";
+import timeout from "@/master/forms/webchess/el/timeout";
 export default {
   name: "webCh3",
   mixins: [masterMixin],
   components: {
-    chObList
+    color,
+    position,
+    timeout
   },
   data() {
     return {
@@ -34,82 +59,15 @@ export default {
       required: {}
     };
   },
-  created() {
-    this.getData();
-  },
+  created() {},
   updated() {},
   mounted() {
     this.$emit("btnActive", !this.error.length);
   },
   methods: {
-    getData() {
-      $.get(
-        this.$root.mainurl + "/api?action=getUserPermissions&ut=web",
-        data => {
-          this.data = data.data;
-        },
-        "JSON"
-      );
-    },
-
-    getPerm() {
-      let f = this.lodash.filter(this.data.permissions_tree, item => {
-        return item.state.selected == true;
-      });
-
-      let data = [];
-
-      f.forEach(item => {
-        data.push(item.permissions);
-      });
-
-      return data;
-    },
-
     send(e) {
-      if (e == "prev") {
-        this.$emit("footerBtn", e);
-        return true;
-      }
-
-      //   console.log(data_to_send);
-
-      if (!this.formChange) {
-        this.$emit("footerBtn", e);
-        return false;
-      }
-
-      this.save(e);
-
-      // $.ajax({
-      //   url:
-      //     this.$root.mainurl +
-      //     "/api?action=updateUserPermissions&ut=web",
-      //   dataType: "json",
-      //   data: { permissions_data: JSON.stringify(data_to_send) },
-      //   method: "POST"
-      // })
-      //   .done(response => {
-      //     if (response.error) {
-      //       swal("Ошибка!", response.error.message, "error");
-      //     } else {
-      //       this.$emit("footerBtn", e);
-      //       //   swal("Успешно обновлено!", response.data.message, "success");
-      //     }
-      //   })
-      //   .fail(function(jqXHR, textStatus) {
-      //     console.log(jqXHR);
-      //     swal("Ошибка!", jqXHR.responseText, "error");
-      //   });
-
-      return;
-    },
-    save(e) {
-      let data_to_send = this.getPerm();
-      if (e == "save") {
-        e = null;
-      }
-      this.setPermissions(data_to_send, "web", e);
+      this.$emit("footerBtn", e);
+      return true;
     }
   }
 };

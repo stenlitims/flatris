@@ -101,7 +101,20 @@
       </div>
     </div>
     <div v-else>
-      <h3>Ваш тарифный план</h3>
+      <div class="settings-btns">
+        <h3>Ваш тарифный план</h3>
+        <div class="order-mob-btns text-center">
+          <router-link
+            :to="{ name: 'settings', params: { id: 'tarif' }, query: {step: 2}}"
+            class="btn btn-line btn-md waves-effect"
+          >Продлить</router-link>
+          <router-link
+            :to="{ name: 'settings', params: { id: 'tarif' }}"
+            class="btn btn-md btn-or waves-effect"
+          >Изменить</router-link>
+        </div>
+      </div>
+
       <div class="row tarif-list" v-if="$store.state.tariff.code">
         <div class="col-lg-3">
           <div class="t">Тариф</div>
@@ -137,9 +150,6 @@
         </div>
       </div>
 
-      <br>
-      <br>
-      <br>
       <h3>Ваши платежи</h3>
       <div class="table-responsive permissions-table">
         <table class="table table-actions-bar">
@@ -150,7 +160,7 @@
               <th>Заказ</th>
               <th>Статус</th>
               <th>Сумма</th>
-              <th style="min-width: 80px;" class="text-center">Детали</th>
+              <!-- <th style="min-width: 80px;" class="text-center">Детали</th> -->
             </tr>
           </thead>
           <tbody>
@@ -169,13 +179,13 @@
                 >{{setStatus(item.status)}}</span>
               </td>
               <td>{{Number_format(item.amount)}} {{item.currency}}</td>
-              <td class="text-center">
+              <!-- <td class="text-center">
                 <div class="more-dots" @click="order = item">
                   <span></span>
                   <span></span>
                   <span></span>
                 </div>
-              </td>
+              </td>-->
             </tr>
           </tbody>
         </table>
@@ -210,6 +220,7 @@ export default {
     adate() {
       if (!this.$store.state.account.end_date) return;
       let date1 = this.formatDate(this.$store.state.account.end_date);
+
       return date1;
     },
     orders() {
@@ -221,11 +232,19 @@ export default {
     formatDate(adate) {
       if (!adate) return;
       adate = new Date(adate);
+
       let out = {
         day: adate.getDate(),
         month: adate.getMonth() + 1,
         year: adate.getFullYear()
       };
+
+      if (out.day < 10) {
+        out.day = "0" + out.day;
+      }
+      if (out.month < 10) {
+        out.month = "0" + out.month;
+      }
 
       return out;
     },
@@ -247,11 +266,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .tarif-list {
   margin-right: -10px !important;
   margin-left: -10px !important;
   font-size: 14px;
+  margin-bottom: 50px;
   > div {
     padding-left: 10px !important;
     padding-right: 10px !important;
@@ -275,13 +295,54 @@ export default {
   }
 }
 
+.order-mob-btns {
+  .btn {
+    margin: 0 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
 @media print {
-  .heading, .main-header, .wrap-left-nav{
+  .heading,
+  .main-header,
+  .wrap-left-nav {
     display: none !important;
   }
-  .settings-content{
+  .settings-content {
     max-width: 100% !important;
     flex: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .pull-right,
+  .pull-left {
+    float: none;
+  }
+  .m-h-50 {
+    display: none;
+  }
+  .tarif-list {
+    margin-bottom: 30px;
+  }
+  .order-mob-btns {
+    margin-bottom: 30px;
+  }
+
+  .permissions-table {
+    border: 4px solid #ebf2f7;
+    margin-left: -15px;
+    margin-right: -15px;
+    width: auto;
+    .table {
+      min-width: 700px;
+      font-size: 12px;
+    }
   }
 }
 </style>

@@ -3,49 +3,74 @@
     <div class="heading">
       <div class="main-container container">
         <div class="l">Размещение квартир на порталах недвижимости</div>
-
-     
       </div>
     </div>
 
+    <toolNav v-if="$store.state.isMobile"></toolNav>
+
     <div class="main-container container">
-      <div class="inst-list main-list" v-if="countObjects">
-        <div class="row">
-          <div class="col-md-6 col-lg-4">
-            <div class="item">
-              <div class="title">Интеграция с Мир Квартир</div>
-              <div class="img img-m">
-                <img :src="$store.state.mainurl+'/assets/panel/img/mirkv.png'" alt>
-              </div>
+      <div v-if="countObjects">
+        <div class="inst-list main-list" v-if="!$store.state.isMobile">
+          <div class="row">
+            <div class="col-md-6 col-lg-4">
+              <div class="item">
+                <div class="title">Интеграция с Мир Квартир</div>
+                <div class="img img-m">
+                  <img :src="$store.state.mainurl+'/assets/panel/img/mirkv.png'" alt>
+                </div>
 
-              <div class="btns" v-if="mirkv">
-                <router-link
-                  :to="{ name: 'new_mirkv', params: { id: 1}}"
-                  class="btn btn-outline-primary waves-effect"
-                >Редактировать</router-link>
-                <button
-                  class="btn btn-outline-primary2 waves-effect"
-                  @click="OffPermissions(null, 'mirkvartir')"
-                >Отключить</button>
-              </div>
+                <div class="btns" v-if="mirkv">
+                  <router-link
+                    :to="{ name: 'new_mirkv', params: { id: 1}}"
+                    class="btn btn-outline-primary waves-effect"
+                  >Редактировать</router-link>
+                  <button
+                    class="btn btn-outline-primary2 waves-effect"
+                    @click="OffPermissions(null, 'mirkvartir')"
+                  >Отключить</button>
+                </div>
 
-              <div v-else>
-                <router-link
-                  :to="{ name: 'new_mirkv', params: { id: 1 }}"
-                  class="btn btn-default waves-effect"
-                >РАЗМЕСТИТЬ</router-link>
-                <div class="info">
-                  <a href="#">Посмотреть инструкцию</a>
+                <div v-else>
+                  <router-link
+                    :to="{ name: 'new_mirkv', params: { id: 1 }}"
+                    class="btn btn-default waves-effect"
+                  >РАЗМЕСТИТЬ</router-link>
+                  <div class="info">
+                    <a href="#">Посмотреть инструкцию</a>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div v-else class="list-mod-objects">
+          <div class="item" :class="{'no-active': !mirkv}">
+            <router-link :to="{ name: 'new_mirkv', params: { id: 1}}" class="img">
+              <img :src="$store.state.mainurl+'/assets/panel/img/mirkv.png'" alt>
+            </router-link>
+             <router-link :to="{ name: 'new_mirkv', params: { id: 1}}" class="info">
+              <div class>Интеграция с Мир Квартир</div>
+            </router-link>
+            <div class="bot-btn" v-if="mirkv">
+              <span></span>
+              <span></span>
+              <span></span>
+              <div class="a-nav">
+                <router-link :to="{ name: 'new_mirkv', params: { id: 1}}" class="link">Редактировать</router-link>
+                <button class="link" @click="OffPermissions(null, 'mirkvartir')">Отключить</button>
+              </div>
+            </div>
+            <router-link
+              v-else
+              :to="{ name: 'new_mirkv', params: { id: 1 }}"
+              class="off"
+            ><img :src="$store.state.mainurl+'/assets/panel/img/off.png'" alt></router-link>
           </div>
         </div>
       </div>
 
       <noObjedcts v-else></noObjedcts>
     </div>
-
   </div>
 </template>
 
@@ -61,9 +86,9 @@ export default {
   },
 
   created() {
-    if (!this.$store.state.permissions.mirkvartir.length) {
+    //if (!this.$store.state.permissions.mirkvartir.length) {
       this.$store.commit("loadPermissions", "mirkvartir");
-    }
+   // }
     window.routeParam = { name: this.$route.name, params: this.$route.params };
   },
 

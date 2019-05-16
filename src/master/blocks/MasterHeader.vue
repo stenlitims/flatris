@@ -110,7 +110,7 @@ export default {
     }
     .item {
       position: relative;
-      z-index: 2;
+     // z-index: 2;
       &.active {
         .cl {
           border: 4px solid #5fbeaa;

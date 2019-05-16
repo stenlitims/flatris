@@ -1,5 +1,17 @@
 <template>
 <div>
+   <my-upload
+      field="n_img"
+      v-model="showUp"
+      :width="1920"
+      :height="1080"
+      :url="$store.state.apiurl"
+      langType="ru"
+      :noCircle="true"
+      :params="{action:'setBuilding', id: form.id}"
+      @crop-upload-success="cropUploadSuccess"
+      img-format="jpg"
+    ></my-upload>
   <div class="edit-form t-col" :class="{'loader': loader}">
     <h4 class="text-center">Дом {{form.name}}</h4>
     <div :class="mobClass">
@@ -21,9 +33,9 @@
         <div class="col-sm-6">
           <div class="form-group text-center">
             <label>Загрузить визуализацию ген плана</label>
-            <label v-if="!form.img" class="btn btn-md w-100 waves-effect up-file" for="img">
+            <label v-if="!form.img" @click="showUp = true" class="btn btn-md w-100 waves-effect up-file" for="img">
               <span class="name">Загрузить</span>
-              <input type="file" name="img" accept="image/*" id="img" class="form-control" placeholder="Файл">
+              <!-- <input type="file" name="img" accept="image/*" id="img" class="form-control" placeholder="Файл"> -->
             </label>
             
             
@@ -33,7 +45,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" v-if="form.img">
             <label>Отметить дома на ген плане</label>
             <div class="wrap-input">
               <input type="text" placeholder="" v-model="countOb" disabled  class="form-control">
@@ -70,7 +82,8 @@ export default {
   data() {
     return {
       actionDel: "delBuildingFile",
-      action: "setBuilding"
+      action: "setBuilding",
+      showUp: false
     };
   },
 

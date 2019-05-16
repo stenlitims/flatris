@@ -161,6 +161,7 @@ export default {
         success: data => {
           if (data.type == "success") {
             this.success = true;
+            this.setComp(this.form.id, 'pl');
             this.form.complete = true;
             if (data.data.img) this.form.img = data.data.img;
             if (data.data.img_3d) this.form.img_3d = data.data.img_3d;

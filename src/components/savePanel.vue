@@ -55,42 +55,12 @@ export default {
   },
   methods: {
     closePanel() {
+      // console.log(3452);
       this.$emit("userIds", []);
       this.$bus.emit("clearUsers");
-    },
-    removeUser(ids) {
-      if (!ids) return;
-      (async () => {
-        const { value: removeUser } = await swal({
-          title: "Удалить?",
-          text: "Вы точно хотите удалить?",
-          type: "error",
-          showCancelButton: true,
-          confirmButtonClass: "btn-warning",
-          confirmButtonText: "Да, удалить",
-          cancelButtonText: "Отмена",
-          cancelButtonClass: "btn btn-line btn-md waves-effect",
-          confirmButtonClass: "btn btn-or btn-md waves-effect"
-        });
-
-        if (removeUser) {
-          $.post(
-            this.$store.state.apiurl,
-            {
-              action: "removeUser",
-              ids: ids
-            },
-            data => {
-              if (data.type == "success") {
-                this.$store.commit("getUsers");
-                this.$emit("userIds", []);
-                swal.close();
-              }
-            },
-            "json"
-          );
-        }
-      })();
+      this.$store.commit("setChanges", {
+        count: []
+      });
     },
 
     cancel() {
@@ -123,6 +93,24 @@ export default {
   }
   .title {
     margin-left: 30px;
+  }
+}
+@media (max-width: 991px) {
+  .r {
+    display: none;
+  }
+}
+@media (max-width: 567px) {
+  .l {
+    flex-wrap: wrap;
+    > div {
+      width: 100%;
+      text-align: center;
+    }
+    .title {
+      margin: 0 0 10px;
+      order: -1;
+    }
   }
 }
 </style>

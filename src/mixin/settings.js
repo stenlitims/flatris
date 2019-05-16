@@ -15,6 +15,9 @@ export default {
   },
 
   beforeDestroy() {
+  //  console.log(this.$route.params.id);
+    this.$bus.off('user', this.send);
+    this.$bus.off('notification', this.send);
     this.$bus.off(this.$route.params.id, this.send);
   },
 

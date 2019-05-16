@@ -20,7 +20,7 @@
     </div>
 
     <div class="js-per-list">
-      <div class="list-obj">
+      <div class="list-obj" v-if="child(main)">
         <div class="main">
           <div class="item" v-for="(b, bi) in child(main)" :key="bi">
             <div
@@ -61,11 +61,20 @@ export default {
   },
 
   created() {
+    // console.log(this.userId, this.$store.state.permissionsCMS);
+
     if (this.userId) {
-      this.data = this.$store.state.permissionsCMS[this.userId];
+      if (!this.$store.state.permissionsCMS[this.userId]) {
+        this.$store.commit("loadPermissionsCMS", [this.userId]);
+        setTimeout(() => {
+          this.data = this.$store.state.permissionsCMS[this.userId];
+        }, 500);
+      } else {
+        this.data = this.$store.state.permissionsCMS[this.userId];
+      }
     } else {
       this.data = { ...this.$store.state.permissions.clear };
-    //  console.log(this.data);
+      //  console.log(this.data);
       window.newUserPr = this.data;
       this.setAll();
     }
@@ -122,6 +131,7 @@ export default {
       }
     },
     child(item) {
+   //   console.log(item);
       let data = this.lodash.filter(this.data, { parent: item.id });
       if (this.main.state.selected) {
         for (let it of data) {

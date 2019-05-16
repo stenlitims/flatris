@@ -58,7 +58,13 @@ export default {
   mounted() {
     // console.log(this.$refs);
   },
-  computed: {},
+  computed: {
+    rmodal(){
+      // if(){
+
+      // }
+    }
+  },
   methods: {
     validForm(user = null) {
       if (!user) {
@@ -282,4 +288,20 @@ export default {
     margin-top: 7px;
   }
 }
+@media (max-width: 567px) {
+  .modal-right{
+    width: 100%;
+    .content{
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+
+  .modal-heading{
+    font-size: 16px;
+    padding: 15px;
+  }
+}
+
+
 </style>

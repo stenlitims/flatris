@@ -1,44 +1,47 @@
 <template>
-<div class="list-email">
-  <div class="wrap-form" :class="{'loader': loader}">
-    <div class="form-group" :class="{'main': i == 0}" v-for="(item, i) in emails" :key="i">
-      <label class="text-center m-label" v-if="i == 0">Главный Email</label>
-      <div v-if="count < 6">
-        <div v-if="i == 0" class="plus" @click="add()">+</div>
-      </div>
-      <div v-if="i != 0" class="minus" @click="del(i)">-</div>
+  <div class="list-email">
+    <div class="wrap-form" :class="{'loader': loader}">
+      <div class="form-group" :class="{'main': i == 0}" v-for="(item, i) in emails" :key="i">
+        <label class="text-center m-label" v-if="i == 0">Главный Email</label>
+        <div v-if="count < 6">
+          <div v-if="i == 0" class="plus" @click="add()">+</div>
+        </div>
+        <div v-if="i != 0" class="minus" @click="del(i)">-</div>
 
-      <div v-if="i == 0">
-        <input type="text" v-model="emails[i]" placeholder="" :disabled="editInput" class="form-control">
-        <div class="edit">
-          <img
-          @click="editInput = !editInput"
-           src="https://test.flatris.com.ua/assets/panel/img/edit.svg" alt="">
+        <div v-if="i == 0">
+          <input
+            type="text"
+            v-model="emails[i]"
+            placeholder
+            :disabled="editInput"
+            class="form-control"
+          >
+          <div class="edit">
+            <img
+              @click="editInput = !editInput"
+              src="https://test.flatris.com.ua/assets/panel/img/edit.svg"
+              alt
+            >
+          </div>
+        </div>
+        <div v-else>
+          <input type="text" v-model="emails[i]" placeholder class="form-control">
         </div>
       </div>
-      <div v-else>
-        <input type="text" v-model="emails[i]" placeholder="" class="form-control">
-      </div>
-      
-    </div>
-    
-    <div v-if="errors.length">
-      <div class="alert alert-danger text-center" role="alert">
-      <p>Принимаются только gmail адреса</p> 
-        <p v-for="(item, i) in errors" :key="i">
-          {{item}}
-        </p>
-      </div>
-    </div>
 
-    <div class="text-center btns" v-if="emails[0]">
-      <button @click="save" class="btn btn-md waves-effect">Сохранить</button>
-      <button @click="$emit('saveEmails', true)" class="btn btn-cancel btn-md waves-effect">Отмена</button>
-    </div>
+      <div v-if="errors.length">
+        <div class="alert alert-danger text-center" role="alert">
+          <p>Принимаются только gmail адреса</p>
+          <p v-for="(item, i) in errors" :key="i">{{item}}</p>
+        </div>
+      </div>
 
+      <div class="text-center btns" v-if="emails[0]">
+        <button @click="save" class="btn btn-md waves-effect">Сохранить</button>
+        <button @click="$emit('saveEmails', true)" class="btn btn-cancel btn-md waves-effect">Отмена</button>
+      </div>
+    </div>
   </div>
-  
-</div>
 </template>
 
 <script>
@@ -65,13 +68,11 @@ export default {
     }
   },
   methods: {
-    
     del(i) {
       this.emails.splice(i, 1);
     },
     add(i) {
       this.emails.push("");
- 
     },
     get() {
       $.post(
@@ -82,9 +83,12 @@ export default {
         },
         data => {
           if (data) {
+            data = data.filter(o => {
+              return o != "flatris.ga@gmail.com";
+            });
             this.emails = data;
             this.emailsCopy = data.slice();
-            this.loader = false
+            this.loader = false;
             // console.log(data);
           }
         },
@@ -104,7 +108,7 @@ export default {
           }
         }
         if (!f) {
-         if(item.trim()) remove.push(item.trim());
+          if (item.trim()) remove.push(item.trim());
         }
       }
       for (let item of this.emails) {
@@ -120,20 +124,20 @@ export default {
         }
 
         if (!f) {
-         if(item.trim()) add.push(item.trim());
+          if (item.trim()) add.push(item.trim());
         }
       }
 
       console.log("add", add);
       console.log("remove", remove);
 
-   //   return;
+      //   return;
 
       if (!this.emails[0].trim()) this.errors.push(this.emails[0].trim());
 
       if (this.errors.length) return;
 
-      if(!add.length && !remove.length){
+      if (!add.length && !remove.length) {
         this.$emit("saveEmails", true);
         return;
       }
@@ -155,8 +159,6 @@ export default {
         },
         "json"
       );
-
-
     }
   }
 };
@@ -202,9 +204,9 @@ export default {
 .wrap-form {
   min-height: 300px;
 }
-.btns{
+.btns {
   margin-top: 40px;
-  .btn{
+  .btn {
     margin: 0 7px;
     min-width: 106px;
   }
@@ -219,12 +221,9 @@ export default {
   }
 }
 
-
 @media (max-width: 567px) {
-  .list-email{
+  .list-email {
     max-width: 260px;
   }
 }
-
-
 </style>

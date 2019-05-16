@@ -1,7 +1,8 @@
 <template>
   <div class="settings-right">
     <div class="settings-btns">
-      <h3>Подключение агентств</h3>
+      <h3>Подключение агентств недвижимости</h3>
+     
 
       <div class="form-group">
         <div class="search">
@@ -9,10 +10,14 @@
           <i class="fa fa-search" aria-hidden="true"></i>
         </div>
       </div>
+       <router-link
+        :to="{ name: 'new_agent', params: { id: 1 }}"
+        class="btn btn-lg btn-or waves-effect"
+      >Подключить</router-link>
     </div>
 
     <div class="list-settings" v-if="countObjects">
-      <div class="item control-wrap">
+      <!-- <div class="item control-wrap">
         <div class="c-title">Мир квартир</div>
         <div class="c-btns" v-if="mirkv">
           <router-link
@@ -30,7 +35,7 @@
             class="btn btn-or waves-effect"
           >РАЗМЕСТИТЬ</router-link>
         </div>
-      </div>
+      </div> -->
     </div>
 
     <noObjedcts v-else></noObjedcts>

@@ -13,10 +13,16 @@ export default {
 
 
   computed: {
+
+    $amo(){
+      if (!this.$store.state.amo) return {};
+      return this.$store.state.amo;
+    },
+    
     countObjects() {
       //   return false;
       if (!this.$store.state.myObjects) {
-        this.$store.commit("loadMyObjects", "test");
+     //   this.$store.commit("loadMyObjects", "test");
         return false;
       }
       if (typeof this.$store.state.myObjects == "object") {
@@ -97,7 +103,7 @@ export default {
 
     setChanges(item, mod = null, original = null) {
 
-      console.log(item);
+      
 
 
 
@@ -111,6 +117,8 @@ export default {
         mod = $.trim(this.form[item]);
       }
 
+     
+
       if (original != mod) {
         if (!this.changes.count.includes(item)) this.changes.count.push(item)
       } else {
@@ -120,15 +128,17 @@ export default {
           this.changes.count.splice(index, 1);
         }
       }
-      // console.log(this.changes.count);
+    
 
       this.$store.commit("setChanges", this.changes);
 
-      if (item == 'logo' && !this.$store.state.changes.count.length) {
+      if (item == 'logo' || item == 'list' && !this.$store.state.changes.count.length) {
         this.$store.commit("setChanges", {
           count: [item]
         });
       }
+
+   //   console.log(this.$store.state.changes);
 
     },
 
@@ -149,12 +159,12 @@ export default {
           let obj = this.$store.state.myObjects[item.permissions.object_id];
           obj.selected = item.state.selected;
           obj.object_id = item.permissions.object_id;
+        //  console.log(obj.selected);
           data.push(obj);
         }
       }
 
       return data;
-
     },
 
     OffPermissions(id, ut = 'web') {
@@ -216,9 +226,10 @@ export default {
     },
 
     setPermissions(permissions, ut = 'web', e = null) {
+
       $.ajax({
           url: this.$root.mainurl +
-            "/api?action=updateUserPermissions&ut=" + ut,
+            "/api/?action=updateUserPermissions&ut=" + ut,
           dataType: "json",
           data: {
             permissions_data: JSON.stringify(permissions)
@@ -370,6 +381,42 @@ export default {
     SetRouteParam(route) {
       console.log(route);
       window.routeParam = route;
-    }
+    },
+
+    // удаление пользователей 
+    removeUser(ids) {
+      if (!ids) return;
+      (async () => {
+        const { value: removeUser } = await swal({
+          title: "Удалить?",
+          text: "Вы точно хотите удалить?",
+          type: "error",
+          showCancelButton: true,
+          confirmButtonClass: "btn-warning",
+          confirmButtonText: "Да, удалить",
+          cancelButtonText: "Отмена",
+          cancelButtonClass: "btn btn-line btn-md waves-effect",
+          confirmButtonClass: "btn btn-or btn-md waves-effect"
+        });
+
+        if (removeUser) {
+          $.post(
+            this.$store.state.apiurl,
+            {
+              action: "removeUser",
+              ids: ids
+            },
+            data => {
+              if (data.type == "success") {
+                this.$store.commit("getUsers");
+                this.$emit("userIds", []);
+                swal.close();
+              }
+            },
+            "json"
+          );
+        }
+      })();
+    },
   }
 }

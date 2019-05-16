@@ -9,6 +9,7 @@ export default new Vuex.Store({
     mainurl: 'https://test.flatris.com.ua',
     user: {},
     users: null,
+    crmUsers: null,
     tariff: {},
     account: {},
     api: {
@@ -41,8 +42,39 @@ export default new Vuex.Store({
     },
     tariffs: null,
     orders: null,
+    checkGal: [],
+    amo: null,
+    webchess: null,
+    isMobile: false,
+  },
+  actions: {
+    getWebchess({
+      commit,
+      state
+    }, id) {
+      $.post(
+        state.apiurl, {
+          action: "getWebchess",
+          id: id
+        },
+        data => {
+          if (data) {
+            commit('getWebchess', data.data);
+          } else {
+            commit('getWebchess', {});
+          }
+        },
+        "json"
+      );
+    },
   },
   mutations: {
+    setCheckGal(state, payload) {
+      state.checkGal.push(payload);
+    },
+    setIsMobile(state, payload) {
+      state.isMobile = payload;
+    },
     loadRmodal(state, payload) {
       state.rmodal = payload;
     },
@@ -59,6 +91,22 @@ export default new Vuex.Store({
         },
         "json"
       );
+    },
+    getAmo(state) {
+      $.post(
+        state.apiurl, {
+          action: "getAmo"
+        },
+        data => {
+          if (data) {
+            state.amo = data;
+          }
+        },
+        "json"
+      );
+    },
+    getWebchess(state, payload) {
+      state.webchess = payload;
     },
     getApi(state) {
       $.post(
@@ -101,6 +149,9 @@ export default new Vuex.Store({
         "json"
       );
     },
+    // upadteUser(state, data){
+    //   state.user
+    // },
     loadUser(state) {
       $.post(
         state.apiurl, {
@@ -108,6 +159,9 @@ export default new Vuex.Store({
         },
         data => {
           if (data) {
+            if (data.type == 'No access') {
+              //  location = 'https://flatris.com.ua/login';
+            }
             // console.log(state);
             state.user = data;
             state.user.main = 1;
@@ -123,12 +177,26 @@ export default new Vuex.Store({
         },
         data => {
           if (data) {
-            state.users = data;
+            state.users = data.users;
+            state.crmUsers = data.crmUsers;
           }
         },
         "json"
       );
     },
+    // getCrmUsers(state) {
+    //   $.post(
+    //     state.apiurl, {
+    //       action: 'getCrmUsers'
+    //     },
+    //     data => {
+    //       if (data) {
+    //         state.crmUsers = data;
+    //       }
+    //     },
+    //     "json"
+    //   );
+    // },
     loadMyObjects(state, payload) {
       //  console.log(payload);
       $.post(
@@ -153,7 +221,7 @@ export default new Vuex.Store({
     },
     loadPermissions(state, payload = 'web') {
       $.get(
-        state.mainurl + "/api?action=getUserPermissions&ut=" + payload,
+        state.mainurl + "/api/?action=getUserPermissions&ut=" + payload,
         data => {
           //  console.log(data);
           if (data.error) {
@@ -162,8 +230,7 @@ export default new Vuex.Store({
           state.permissions[payload] = data.data.permissions_tree;
           if (payload == 'web') {
 
-            let data2 = [...data.data.permissions_tree];
-
+            let data2 = _.cloneDeep(data.data.permissions_tree);
             for (let item of data2) {
               item.state.selected = false;
               item.state.opened = false;
@@ -178,7 +245,7 @@ export default new Vuex.Store({
       for (let item of payload) {
         //  console.log(item);
         $.get(
-          state.mainurl + "/api?action=getUserPermissions&ut=cms&agent_id=" + item,
+          state.mainurl + "/api/?action=getUserPermissions&ut=cms&agent_id=" + item,
           data => {
             if (data.error) {
               return false;

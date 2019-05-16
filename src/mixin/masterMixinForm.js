@@ -4,6 +4,7 @@ export default {
     return {
       success: false,
       loader: false,
+      showUp: false
     }
   },
   watch: {
@@ -32,6 +33,16 @@ export default {
   methods: {
     openOL() {
       this.$bus.emit("editallPlan", true);
+    },
+
+    // поставить галочку
+    setComp(id, type) {
+      console.log(type + '' + id);
+      this.$store.commit("setCheckGal", type + '' + id);
+    },
+
+    cropUploadSuccess(data) {
+      this.form.img = data.img;
     },
 
     sendDataFile() {
@@ -64,6 +75,7 @@ export default {
             this.form.complete = true;
             this.loader = false;
             if (data.img) this.form.img = data.img;
+            this.setComp(this.form.id, '-');
             setTimeout(() => {
               this.success = false;
             }, 2000);
@@ -72,9 +84,9 @@ export default {
       });
     },
 
-    addComplete(id){
-     // $('[data-id='+id+']').addClass('complete');
-     
+    addComplete(id) {
+      // $('[data-id='+id+']').addClass('complete');
+
     },
 
     sendData() {
